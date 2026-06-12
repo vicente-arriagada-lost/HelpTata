@@ -1,6 +1,10 @@
 # HelpTata — Backend (Microservicios)
 
+<<<<<<< HEAD
 Plataforma educativa de tutoriales construida con una arquitectura de **6 microservicios Spring Boot** independientes, cada uno con su propia base de datos H2 en memoria para desarrollo.
+=======
+Plataforma educativa de tutoriales construida con una arquitectura de **7 microservicios Spring Boot** independientes, cada uno con su propia base de datos H2 en memoria para desarrollo.
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 
 ---
 
@@ -15,6 +19,10 @@ Plataforma educativa de tutoriales construida con una arquitectura de **6 micros
   - [ms-Progreso (8083)](#ms-progreso--puerto-8083)
   - [ms-Direccion (8084)](#ms-dirección--puerto-8084)
   - [ms-Evaluaciones (8085)](#ms-evaluaciones--puerto-8085)
+<<<<<<< HEAD
+=======
+  - [ms-PreguntasRespuestas (8086)](#ms-preguntasrespuestas--puerto-8086)
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 - [Solicitudes con Postman](#solicitudes-con-postman)
 - [Consolas H2](#consolas-h2)
 
@@ -39,6 +47,7 @@ Cada microservicio es un proyecto Maven independiente. Se deben levantar en term
 
 ### Orden recomendado de inicio
 
+<<<<<<< HEAD
 Levantar **ms-Dirección primero**, ya que ms-Usuario lo consume via RestTemplate.
 
 ```
@@ -48,6 +57,18 @@ Levantar **ms-Dirección primero**, ya que ms-Usuario lo consume via RestTemplat
 4. ms-Evaluaciones (puerto 8085)
 5. ms-Progreso    (puerto 8083)
 6. ms-Logs        (puerto 8081)
+=======
+Levantar **ms-Dirección primero** (ms-Usuario lo consume) y **ms-Progreso antes que ms-PreguntasRespuestas** (este último lo notifica al corregir un cuestionario).
+
+```
+1. ms-Direccion          (puerto 8084)
+2. ms-Usuario            (puerto 8080)
+3. ms-Tutoriales         (puerto 8082)
+4. ms-Evaluaciones       (puerto 8085)
+5. ms-Progreso           (puerto 8083)
+6. ms-PreguntasRespuestas (puerto 8086)
+7. ms-Logs               (puerto 8081)
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 ```
 
 ### Comandos por microservicio
@@ -84,7 +105,17 @@ cd msProgresoHelpTata
 mvn spring-boot:run
 ```
 
+<<<<<<< HEAD
 **Terminal 6 — ms-Logs**
+=======
+**Terminal 6 — ms-PreguntasRespuestas**
+```bash
+cd msPreguntasYRespuestasHelpTata
+mvn spring-boot:run
+```
+
+**Terminal 7 — ms-Logs**
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 ```bash
 cd msLogsHelpTata
 mvn spring-boot:run
@@ -328,6 +359,64 @@ DELETE /api/evaluaciones/{id}                 → Elimina una evaluación
 
 ---
 
+<<<<<<< HEAD
+=======
+### ms-PreguntasRespuestas — Puerto 8086
+
+Gestión completa de cuestionarios: preguntas, alternativas, corrección automática de respuestas y registro de resultados por usuario. Es el motor de evaluación de la plataforma.
+
+**Tecnología:** Spring Boot 4.0.6 · H2 · Lombok · Validation · Security
+
+**Comunicación:** Al corregir un cuestionario, llama a **ms-Progreso (8083)** via RestTemplate para actualizar las preguntas acertadas/falladas del usuario en el tutorial correspondiente.
+
+**Entidades:**
+
+| Entidad | Campos principales |
+|---|---|
+| `Cuestionario` | `id_cuestionario`, `titulo_cuestionario`, `descripcion_cuestionario`, `id_tutor` (FK a ms-Tutoriales) |
+| `Pregunta` | `id_pregunta`, `enunciado_pregunta`, `id_cuestionario` (FK) |
+| `Alternativa` | `id_alternativa`, `texto_alternativa`, `es_correcta`, `id_pregunta` (FK) |
+| `RespuestaUsuario` | `id_respuesta`, `id_usuario`, `id_pregunta`, `id_alternativa_seleccionada`, `id_resultado` (FK) |
+| `ResultadoCuestionario` | `id_resultado`, `id_usuario`, `id_cuestionario`, `correctas`, `incorrectas`, `porcentaje`, `fecha_resultado` |
+
+**Endpoints disponibles:**
+
+```
+GET    /api/cuestionarios                                          → Lista todos los cuestionarios
+GET    /api/cuestionarios/{id}                                     → Obtiene cuestionario por ID
+GET    /api/cuestionarios/tutorial/{idTutor}                       → Cuestionarios de un tutorial
+POST   /api/cuestionarios                                          → Crea un cuestionario
+PUT    /api/cuestionarios/{id}                                     → Actualiza un cuestionario
+DELETE /api/cuestionarios/{id}                                     → Elimina un cuestionario
+POST   /api/cuestionarios/{id}/responder                           → Envía respuestas, corrige y guarda resultado ★
+
+GET    /api/preguntas                                              → Lista todas las preguntas
+GET    /api/preguntas/{id}                                         → Obtiene pregunta por ID
+GET    /api/preguntas/cuestionario/{idCuestionario}                → Preguntas de un cuestionario
+POST   /api/preguntas                                              → Crea una pregunta
+PUT    /api/preguntas/{id}                                         → Actualiza una pregunta
+DELETE /api/preguntas/{id}                                         → Elimina una pregunta
+
+GET    /api/alternativas                                           → Lista todas las alternativas
+GET    /api/alternativas/{id}                                      → Obtiene alternativa por ID
+GET    /api/alternativas/pregunta/{idPregunta}                     → Alternativas de una pregunta
+POST   /api/alternativas                                           → Crea una alternativa
+PUT    /api/alternativas/{id}                                      → Actualiza una alternativa
+DELETE /api/alternativas/{id}                                      → Elimina una alternativa
+
+GET    /api/resultados                                             → Lista todos los resultados
+GET    /api/resultados/{id}                                        → Obtiene resultado por ID
+GET    /api/resultados/usuario/{idUsuario}                         → Historial de un usuario
+GET    /api/resultados/cuestionario/{idCuestionario}               → Resultados de un cuestionario
+GET    /api/resultados/usuario/{idUsuario}/cuestionario/{id}       → Historial de usuario en un cuestionario
+DELETE /api/resultados/{id}                                        → Elimina un resultado
+```
+
+> ★ El endpoint `/responder` es el flujo principal: recibe las respuestas del usuario, verifica cada alternativa, calcula el puntaje, guarda el resultado, notifica a ms-Progreso y devuelve `{ correctas, incorrectas, porcentaje }`.
+
+---
+
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 ## Solicitudes con Postman
 
 ### Configuración general
@@ -567,6 +656,99 @@ GET http://localhost:8085/api/evaluaciones/tutorial/1
 
 ---
 
+<<<<<<< HEAD
+=======
+#### ms-PreguntasRespuestas (8086)
+
+El flujo de carga es jerárquico: primero crear el Cuestionario, luego sus Preguntas, luego las Alternativas de cada pregunta.
+
+**Crear un cuestionario**
+```
+POST http://localhost:8086/api/cuestionarios
+Content-Type: application/json
+
+{
+  "titulo_cuestionario": "Cuestionario de Python Básico",
+  "descripcion_cuestionario": "Evalúa conocimientos de variables, tipos de datos y funciones",
+  "id_tutor": 1
+}
+```
+
+**Agregar una pregunta al cuestionario**
+```
+POST http://localhost:8086/api/preguntas
+Content-Type: application/json
+
+{
+  "enunciado_pregunta": "¿Cuál es el tipo de dato para almacenar texto en Python?",
+  "id_cuestionario": 1
+}
+```
+
+**Agregar alternativas a la pregunta**
+```
+POST http://localhost:8086/api/alternativas
+Content-Type: application/json
+
+{
+  "texto_alternativa": "str",
+  "es_correcta": true,
+  "id_pregunta": 1
+}
+```
+```
+POST http://localhost:8086/api/alternativas
+Content-Type: application/json
+
+{
+  "texto_alternativa": "int",
+  "es_correcta": false,
+  "id_pregunta": 1
+}
+```
+
+**Enviar respuestas y obtener corrección**
+```
+POST http://localhost:8086/api/cuestionarios/1/responder
+Content-Type: application/json
+
+{
+  "id_usuario": 1,
+  "respuestas": [
+    { "id_pregunta": 1, "id_alternativa_seleccionada": 1 },
+    { "id_pregunta": 2, "id_alternativa_seleccionada": 5 }
+  ]
+}
+```
+
+Respuesta esperada:
+```json
+{
+  "id_resultado": 1,
+  "correctas": 1,
+  "incorrectas": 1,
+  "porcentaje": 50.0
+}
+```
+
+**Ver historial de un usuario en un cuestionario**
+```
+GET http://localhost:8086/api/resultados/usuario/1/cuestionario/1
+```
+
+**Obtener preguntas de un cuestionario (para el frontend)**
+```
+GET http://localhost:8086/api/preguntas/cuestionario/1
+```
+
+**Obtener alternativas de una pregunta (para el frontend)**
+```
+GET http://localhost:8086/api/alternativas/pregunta/1
+```
+
+---
+
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 ## Consolas H2
 
 Cada microservicio expone una consola web para inspeccionar su base de datos en memoria durante el desarrollo:
@@ -579,6 +761,10 @@ Cada microservicio expone una consola web para inspeccionar su base de datos en 
 | ms-Progreso | http://localhost:8083/h2-console | `jdbc:h2:mem:progresodb` |
 | ms-Dirección | http://localhost:8084/h2-console | `jdbc:h2:mem:direcciondb` |
 | ms-Evaluaciones | http://localhost:8085/h2-console | `jdbc:h2:mem:evaluacionesdb` |
+<<<<<<< HEAD
+=======
+| ms-PreguntasRespuestas | http://localhost:8086/h2-console | `jdbc:h2:mem:preguntasrespuestasdb` |
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 
 En la consola H2:
 - **Driver Class:** `org.h2.Driver`
@@ -599,6 +785,10 @@ En la consola H2:
 | ms-Progreso | 8083 | `progresodb` |
 | ms-Dirección | 8084 | `direcciondb` |
 | ms-Evaluaciones | 8085 | `evaluacionesdb` |
+<<<<<<< HEAD
+=======
+| ms-PreguntasRespuestas | 8086 | `preguntasrespuestasdb` |
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 
 ---
 
@@ -608,7 +798,15 @@ En la consola H2:
 ms-Usuario (8080)
     └──► ms-Dirección (8084)   [RestTemplate — valida que id_direccion exista]
 
+<<<<<<< HEAD
 ms-Evaluaciones (8085) ──► ms-Tutoriales (8082)  [referencia por id_tutor, sin validación cruzada]
 ms-Progreso (8083)     ──► ms-Usuario (8080)      [referencia por id_usuario, sin validación cruzada]
 ms-Progreso (8083)     ──► ms-Tutoriales (8082)   [referencia por id_tutorial, sin validación cruzada]
+=======
+ms-Evaluaciones (8085)        ──► ms-Tutoriales (8082)  [referencia por id_tutor, sin validación cruzada]
+ms-Progreso (8083)            ──► ms-Usuario (8080)      [referencia por id_usuario, sin validación cruzada]
+ms-Progreso (8083)            ──► ms-Tutoriales (8082)   [referencia por id_tutorial, sin validación cruzada]
+ms-PreguntasRespuestas (8086) ──► ms-Tutoriales (8082)   [referencia por id_tutor en Cuestionario, sin validación cruzada]
+ms-PreguntasRespuestas (8086) ──► ms-Progreso (8083)     [RestTemplate — actualiza preguntas_acertadas/falladas al corregir]
+>>>>>>> 9eacac9 (Se añade microservicio preguntasyrespuestas al repositorio)
 ```
