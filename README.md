@@ -1,6 +1,6 @@
 # HelpTata — Backend (Microservicios)
 
-Plataforma educativa de tutoriales construida con una arquitectura de **7 microservicios Spring Boot** independientes, cada uno con su propia base de datos **MySQL** que se crea automáticamente al levantar el backend.
+Plataforma educativa de tutoriales construida con una arquitectura de **7 microservicios Spring Boot** independientes, cada uno con su propia base de datos **PostgreSQL** que se crea automáticamente al levantar el backend.
 
 ---
 
@@ -17,7 +17,7 @@ Plataforma educativa de tutoriales construida con una arquitectura de **7 micros
   - [ms-Evaluaciones (8085)](#ms-evaluaciones--puerto-8085)
   - [ms-PreguntasRespuestas (8086)](#ms-preguntasrespuestas--puerto-8086)
 - [Solicitudes con Postman](#solicitudes-con-postman)
-- [Bases de datos MySQL](#bases-de-datos-mysql)
+- [Bases de datos PostgreSQL](#bases-de-datos-postgresql)
 - [Swagger UI](#swagger-ui)
 
 ---
@@ -26,17 +26,17 @@ Plataforma educativa de tutoriales construida con una arquitectura de **7 micros
 
 - **Java 21** (LTS)
 - **Maven 3.8+**
-- **MySQL 8+** corriendo localmente en el puerto `3306`
+- **PostgreSQL 15+** corriendo localmente en el puerto `5432`
 - IDE recomendado: IntelliJ IDEA o Spring Tool Suite
 
 Verificar versiones:
 ```bash
 java -version
 mvn -version
-mysql --version
+psql --version
 ```
 
-> **Nota:** MySQL debe estar corriendo antes de levantar cualquier microservicio. Cada MS crea su propia base de datos automáticamente al iniciar gracias al parámetro `createDatabaseIfNotExist=true`. Si tu MySQL tiene contraseña, actualiza `spring.datasource.password=` en el `application.properties` de cada MS.
+> **Nota:** PostgreSQL debe estar corriendo antes de levantar cualquier microservicio. Cada MS crea sus tablas automáticamente al iniciar. Asegúrate de que las bases de datos existan creadas manualmente en PostgreSQL antes del primer arranque, y actualiza el usuario y contraseña en `spring.datasource.username` / `spring.datasource.password` del `application.properties` de cada MS si difieren de los valores por defecto.
 
 ---
 
@@ -726,11 +726,11 @@ GET http://localhost:8086/api/alternativas/pregunta/1
 
 ---
 
-## Bases de datos MySQL
+## Bases de datos PostgreSQL
 
-Cada microservicio crea su base de datos automáticamente al levantar. Las tablas también se crean solas gracias a `ddl-auto=update`.
+Las tablas se crean automáticamente al levantar cada MS gracias a `ddl-auto=update`. Las bases de datos deben existir creadas previamente en PostgreSQL.
 
-| Microservicio | Puerto | Base de datos MySQL |
+| Microservicio | Puerto | Base de datos PostgreSQL |
 |---|---|---|
 | ms-Usuario | 8080 | `helptata_usuario` |
 | ms-Logs | 8081 | `helptata_logs` |
@@ -742,17 +742,17 @@ Cada microservicio crea su base de datos automáticamente al levantar. Las tabla
 
 **Credenciales por defecto (application.properties):**
 ```
-spring.datasource.username=root
+spring.datasource.username=postgres
 spring.datasource.password=
 ```
 
-> Si tu MySQL tiene contraseña, agrégala en `spring.datasource.password=TU_CONTRASEÑA` en el `application.properties` de cada MS.
+> Si tu PostgreSQL tiene contraseña, agrégala en `spring.datasource.password=TU_CONTRASEÑA` en el `application.properties` de cada MS.
 
-Para verificar las bases de datos desde MySQL:
+Para verificar las bases de datos desde PostgreSQL:
 ```sql
-SHOW DATABASES;
-USE helptata_usuario;
-SHOW TABLES;
+\l
+\c helptata_usuario
+\dt
 ```
 
 ---
@@ -777,7 +777,7 @@ También disponible en `/v3/api-docs` para obtener el JSON de OpenAPI.
 
 ## Resumen de puertos
 
-| Microservicio | Puerto | Base de datos MySQL | Spring Boot |
+| Microservicio | Puerto | Base de datos PostgreSQL | Spring Boot |
 |---|---|---|---|
 | ms-Usuario | 8080 | `helptata_usuario` | 3.3.5 |
 | ms-Logs | 8081 | `helptata_logs` | 3.3.5 |
@@ -801,3 +801,50 @@ ms-Progreso (8083)            ──► ms-Tutoriales (8082)   [referencia por i
 ms-PreguntasRespuestas (8086) ──► ms-Tutoriales (8082)   [referencia por id_tutor en Cuestionario, sin validación cruzada]
 ms-PreguntasRespuestas (8086) ──► ms-Progreso (8083)     [RestTemplate — actualiza preguntas_acertadas/falladas al corregir]
 ```
+
+---
+
+## Historial de cambios por microservicio
+
+### ms-Dirección (8084)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agregan datos de prueba iniciales (países, regiones, ciudades, comunas, direcciones)
+- se corrigen las consultas a la base de datos para que funcionen correctamente con MySQL
+- se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
+
+### ms-Tutoriales (8082)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agregan datos de prueba iniciales (tutoriales y fotos)
+- se corrige cómo se guarda el campo foto en la base de datos para que MySQL lo acepte
+- se corrige la consulta que busca fotos por tutorial para que funcione con MySQL
+- se añaden los endpoints CRUD de tutoriales que faltaban (antes solo existían los de fotos)
+- se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
+
+### ms-Logs (8081)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agregan datos de prueba iniciales (logs de ejemplo)
+- se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
+
+### ms-Evaluaciones (8085)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agregan datos de prueba iniciales (evaluaciones de ejemplo)
+- se corrigen las consultas que filtran por tutorial, nivel y tipo para que funcionen con MySQL
+- se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
+
+### ms-Progreso (8083)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agregan datos de prueba iniciales (registros de progreso de ejemplo)
+- se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
+
+### ms-Usuario (8080)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agregan datos de prueba iniciales (usuarios, roles y emails de ejemplo)
+- se añade el endpoint `POST /api/usuarios/login` para que el frontend pueda autenticar usuarios
+- se crea la lógica de login: busca el email registrado, valida la contraseña y devuelve los datos del usuario
+- se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
+
+### ms-PreguntasRespuestas (8086)
+- se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
+- se agrega la dependencia de MySQL en el archivo de configuración del proyecto
+- se agregan datos de prueba iniciales (cuestionarios, preguntas y alternativas de ejemplo)
+- se abren todos los endpoints sin restricción de seguridad para facilitar el desarrollo
