@@ -1,6 +1,6 @@
 # HelpTata — Backend (Microservicios)
 
-Plataforma educativa de tutoriales construida con una arquitectura de **7 microservicios Spring Boot** independientes, cada uno con su propia base de datos H2 en memoria para desarrollo.
+Plataforma educativa de tutoriales construida con una arquitectura de **7 microservicios Spring Boot** independientes, cada uno con su propia base de datos **MySQL** que se crea automáticamente al levantar el backend.
 
 ---
 
@@ -17,7 +17,8 @@ Plataforma educativa de tutoriales construida con una arquitectura de **7 micros
   - [ms-Evaluaciones (8085)](#ms-evaluaciones--puerto-8085)
   - [ms-PreguntasRespuestas (8086)](#ms-preguntasrespuestas--puerto-8086)
 - [Solicitudes con Postman](#solicitudes-con-postman)
-- [Consolas H2](#consolas-h2)
+- [Bases de datos MySQL](#bases-de-datos-mysql)
+- [Swagger UI](#swagger-ui)
 
 ---
 
@@ -25,12 +26,17 @@ Plataforma educativa de tutoriales construida con una arquitectura de **7 micros
 
 - **Java 21** (LTS)
 - **Maven 3.8+**
+- **MySQL 8+** corriendo localmente en el puerto `3306`
 - IDE recomendado: IntelliJ IDEA o Spring Tool Suite
 
-Verificar versión de Java:
+Verificar versiones:
 ```bash
 java -version
+mvn -version
+mysql --version
 ```
+
+> **Nota:** MySQL debe estar corriendo antes de levantar cualquier microservicio. Cada MS crea su propia base de datos automáticamente al iniciar gracias al parámetro `createDatabaseIfNotExist=true`. Si tu MySQL tiene contraseña, actualiza `spring.datasource.password=` en el `application.properties` de cada MS.
 
 ---
 
@@ -117,7 +123,7 @@ También se puede probar con un GET en su endpoint raíz desde el navegador o Po
 
 Gestión de usuarios de la plataforma: creación, roles y emails asociados.
 
-**Tecnología:** Spring Boot 3.3.5 · H2 · Lombok · Validation
+**Tecnología:** Spring Boot 3.3.5 · MySQL · Actuator · Swagger · Lombok · Validation
 
 **Comunicación:** Llama a **ms-Dirección (8084)** vía RestTemplate para validar que el `id_direccion` exista antes de asociarlo a un usuario.
 
@@ -157,7 +163,7 @@ DELETE /api/emails/{id}       → Elimina un email
 
 Registro centralizado de eventos y errores generados por los microservicios del sistema.
 
-**Tecnología:** Spring Boot 3.3.5 · H2 · Actuator · Lombok · Validation
+**Tecnología:** Spring Boot 3.3.5 · MySQL · Actuator · Swagger · Lombok · Validation
 
 **Entidades:**
 
@@ -194,7 +200,7 @@ GET /actuator/info     → Información general
 
 Gestión del catálogo de tutoriales y sus recursos multimedia (fotos).
 
-**Tecnología:** Spring Boot 4.0.6 · H2 · Lombok · Validation · Security
+**Tecnología:** Spring Boot 4.0.6 · MySQL · Actuator · Swagger · Lombok · Validation · Security
 
 **Entidades:**
 
@@ -224,7 +230,7 @@ DELETE /api/fotos/{id}                   → Elimina una foto
 
 Seguimiento del avance de cada usuario dentro de los tutoriales: recursos completados, preguntas respondidas y porcentaje general.
 
-**Tecnología:** Spring Boot 4.0.6 · H2 · Lombok · Validation · Security
+**Tecnología:** Spring Boot 4.0.6 · MySQL · Actuator · Swagger · Lombok · Validation · Security
 
 **Entidades:**
 
@@ -253,7 +259,7 @@ DELETE /api/progreso/{id}                                      → Elimina un re
 
 Gestión de ubicaciones geográficas con estructura jerárquica: País → Región → Ciudad → Comuna → Dirección.
 
-**Tecnología:** Spring Boot 4.0.6 · H2 · Lombok · Validation · Security
+**Tecnología:** Spring Boot 4.0.6 · MySQL · Actuator · Swagger · Lombok · Validation · Security
 
 **Entidades:**
 
@@ -309,7 +315,7 @@ DELETE /api/direcciones/{id}              → Elimina una dirección
 
 Gestión del banco de evaluaciones asociadas a tutoriales, con soporte para distintos tipos y niveles de dificultad.
 
-**Tecnología:** Spring Boot 4.0.6 · H2 · Lombok · Validation · Security
+**Tecnología:** Spring Boot 4.0.6 · MySQL · Actuator · Swagger · Lombok · Validation · Security
 
 **Entidades:**
 
@@ -340,7 +346,7 @@ DELETE /api/evaluaciones/{id}                 → Elimina una evaluación
 
 Gestión completa de cuestionarios: preguntas, alternativas, corrección automática de respuestas y registro de resultados por usuario. Es el motor de evaluación de la plataforma.
 
-**Tecnología:** Spring Boot 4.0.6 · H2 · Lombok · Validation · Security
+**Tecnología:** Spring Boot 4.0.6 · MySQL · Actuator · Swagger · Lombok · Validation · Security
 
 **Comunicación:** Al corregir un cuestionario, llama a **ms-Progreso (8083)** via RestTemplate para actualizar las preguntas acertadas/falladas del usuario en el tutorial correspondiente.
 
@@ -720,40 +726,66 @@ GET http://localhost:8086/api/alternativas/pregunta/1
 
 ---
 
-## Consolas H2
+## Bases de datos MySQL
 
-Cada microservicio expone una consola web para inspeccionar su base de datos en memoria durante el desarrollo:
+Cada microservicio crea su base de datos automáticamente al levantar. Las tablas también se crean solas gracias a `ddl-auto=update`.
 
-| Microservicio | URL Consola H2 | JDBC URL |
+| Microservicio | Puerto | Base de datos MySQL |
 |---|---|---|
-| ms-Usuario | http://localhost:8080/h2-console | `jdbc:h2:mem:usuariodb` |
-| ms-Logs | http://localhost:8081/h2-console | `jdbc:h2:mem:logsdb` |
-| ms-Tutoriales | http://localhost:8082/h2-console | `jdbc:h2:mem:tutorialesdb` |
-| ms-Progreso | http://localhost:8083/h2-console | `jdbc:h2:mem:progresodb` |
-| ms-Dirección | http://localhost:8084/h2-console | `jdbc:h2:mem:direcciondb` |
-| ms-Evaluaciones | http://localhost:8085/h2-console | `jdbc:h2:mem:evaluacionesdb` |
-| ms-PreguntasRespuestas | http://localhost:8086/h2-console | `jdbc:h2:mem:preguntasrespuestasdb` |
+| ms-Usuario | 8080 | `helptata_usuario` |
+| ms-Logs | 8081 | `helptata_logs` |
+| ms-Tutoriales | 8082 | `helptata_tutoriales` |
+| ms-Progreso | 8083 | `helptata_progreso` |
+| ms-Dirección | 8084 | `helptata_direccion` |
+| ms-Evaluaciones | 8085 | `helptata_evaluaciones` |
+| ms-PreguntasRespuestas | 8086 | `helptata_preguntas` |
 
-En la consola H2:
-- **Driver Class:** `org.h2.Driver`
-- **User Name:** `sa`
-- **Password:** *(dejar vacío)*
+**Credenciales por defecto (application.properties):**
+```
+spring.datasource.username=root
+spring.datasource.password=
+```
 
-> La base de datos H2 es en memoria (`create-drop`), por lo que se reinicia cada vez que el microservicio se detiene. Los datos no persisten entre reinicios.
+> Si tu MySQL tiene contraseña, agrégala en `spring.datasource.password=TU_CONTRASEÑA` en el `application.properties` de cada MS.
+
+Para verificar las bases de datos desde MySQL:
+```sql
+SHOW DATABASES;
+USE helptata_usuario;
+SHOW TABLES;
+```
+
+---
+
+## Swagger UI
+
+Cada microservicio expone documentación interactiva de sus endpoints. Accesible desde el navegador sin necesidad de Postman:
+
+| Microservicio | URL Swagger |
+|---|---|
+| ms-Usuario | http://localhost:8080/swagger-ui.html |
+| ms-Logs | http://localhost:8081/swagger-ui.html |
+| ms-Tutoriales | http://localhost:8082/swagger-ui.html |
+| ms-Progreso | http://localhost:8083/swagger-ui.html |
+| ms-Dirección | http://localhost:8084/swagger-ui.html |
+| ms-Evaluaciones | http://localhost:8085/swagger-ui.html |
+| ms-PreguntasRespuestas | http://localhost:8086/swagger-ui.html |
+
+También disponible en `/v3/api-docs` para obtener el JSON de OpenAPI.
 
 ---
 
 ## Resumen de puertos
 
-| Microservicio | Puerto | Base de datos |
-|---|---|---|
-| ms-Usuario | 8080 | `usuariodb` |
-| ms-Logs | 8081 | `logsdb` |
-| ms-Tutoriales | 8082 | `tutorialesdb` |
-| ms-Progreso | 8083 | `progresodb` |
-| ms-Dirección | 8084 | `direcciondb` |
-| ms-Evaluaciones | 8085 | `evaluacionesdb` |
-| ms-PreguntasRespuestas | 8086 | `preguntasrespuestasdb` |
+| Microservicio | Puerto | Base de datos MySQL | Spring Boot |
+|---|---|---|---|
+| ms-Usuario | 8080 | `helptata_usuario` | 3.3.5 |
+| ms-Logs | 8081 | `helptata_logs` | 3.3.5 |
+| ms-Tutoriales | 8082 | `helptata_tutoriales` | 4.0.6 |
+| ms-Progreso | 8083 | `helptata_progreso` | 4.0.6 |
+| ms-Dirección | 8084 | `helptata_direccion` | 4.0.6 |
+| ms-Evaluaciones | 8085 | `helptata_evaluaciones` | 4.0.6 |
+| ms-PreguntasRespuestas | 8086 | `helptata_preguntas` | 4.0.6 |
 
 ---
 
