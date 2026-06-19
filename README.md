@@ -6,19 +6,43 @@ Plataforma educativa de tutoriales construida con una arquitectura de **7 micros
 
 ## Tabla de Contenidos
 
-- [Requisitos previos](#requisitos-previos)
-- [Cómo levantar los microservicios](#cómo-levantar-los-microservicios)
-- [Descripción de cada microservicio](#descripción-de-cada-microservicio)
-  - [ms-Usuario (8080)](#ms-usuario--puerto-8080)
-  - [ms-Logs (8081)](#ms-logs--puerto-8081)
-  - [ms-Tutoriales (8082)](#ms-tutoriales--puerto-8082)
-  - [ms-Progreso (8083)](#ms-progreso--puerto-8083)
-  - [ms-Direccion (8084)](#ms-dirección--puerto-8084)
-  - [ms-Evaluaciones (8085)](#ms-evaluaciones--puerto-8085)
-  - [ms-PreguntasRespuestas (8086)](#ms-preguntasrespuestas--puerto-8086)
-- [Solicitudes con Postman](#solicitudes-con-postman)
-- [Bases de datos PostgreSQL](#bases-de-datos-postgresql)
-- [Swagger UI](#swagger-ui)
+- [HelpTata — Backend (Microservicios)](#helptata--backend-microservicios)
+  - [Tabla de Contenidos](#tabla-de-contenidos)
+  - [Requisitos previos](#requisitos-previos)
+  - [Cómo levantar los microservicios](#cómo-levantar-los-microservicios)
+    - [Orden recomendado de inicio](#orden-recomendado-de-inicio)
+    - [Comandos por microservicio](#comandos-por-microservicio)
+    - [Verificar que un microservicio está corriendo](#verificar-que-un-microservicio-está-corriendo)
+  - [Descripción de cada microservicio](#descripción-de-cada-microservicio)
+    - [ms-Usuario — Puerto 8080](#ms-usuario--puerto-8080)
+    - [ms-Logs — Puerto 8081](#ms-logs--puerto-8081)
+    - [ms-Tutoriales — Puerto 8082](#ms-tutoriales--puerto-8082)
+    - [ms-Progreso — Puerto 8083](#ms-progreso--puerto-8083)
+    - [ms-Dirección — Puerto 8084](#ms-dirección--puerto-8084)
+    - [ms-Evaluaciones — Puerto 8085](#ms-evaluaciones--puerto-8085)
+    - [ms-PreguntasRespuestas — Puerto 8086](#ms-preguntasrespuestas--puerto-8086)
+  - [Solicitudes con Postman](#solicitudes-con-postman)
+    - [Configuración general](#configuración-general)
+    - [Ejemplos por microservicio](#ejemplos-por-microservicio)
+      - [ms-Usuario (8080)](#ms-usuario-8080)
+      - [ms-Logs (8081)](#ms-logs-8081)
+      - [ms-Tutoriales (8082)](#ms-tutoriales-8082)
+      - [ms-Progreso (8083)](#ms-progreso-8083)
+      - [ms-Dirección (8084)](#ms-dirección-8084)
+      - [ms-Evaluaciones (8085)](#ms-evaluaciones-8085)
+      - [ms-PreguntasRespuestas (8086)](#ms-preguntasrespuestas-8086)
+  - [Bases de datos PostgreSQL](#bases-de-datos-postgresql)
+  - [Swagger UI](#swagger-ui)
+  - [Resumen de puertos](#resumen-de-puertos)
+  - [Comunicación entre microservicios](#comunicación-entre-microservicios)
+  - [Historial de cambios por microservicio](#historial-de-cambios-por-microservicio)
+    - [ms-Dirección (8084)](#ms-dirección-8084-1)
+    - [ms-Tutoriales (8082)](#ms-tutoriales-8082-1)
+    - [ms-Logs (8081)](#ms-logs-8081-1)
+    - [ms-Evaluaciones (8085)](#ms-evaluaciones-8085-1)
+    - [ms-Progreso (8083)](#ms-progreso-8083-1)
+    - [ms-Usuario (8080)](#ms-usuario-8080-1)
+    - [ms-PreguntasRespuestas (8086)](#ms-preguntasrespuestas-8086-1)
 
 ---
 
@@ -828,7 +852,7 @@ ms-PreguntasRespuestas (8086) ──► ms-Progreso (8083)     [RestTemplate —
 ### ms-Evaluaciones (8085)
 - se cambia la base de datos de H2 (en memoria) a PostgreSQL para persistir los datos entre reinicios
 - se agregan datos de prueba iniciales (evaluaciones de ejemplo)
-- se corrigen las consultas que filtran por tutorial, nivel y tipo para que funcionen con MySQL
+- se corrigen las consultas que filtran por tutorial, nivel y tipo para que funcionen con PostgreSQL
 - se habilita CORS para que el frontend pueda consumir este servicio sin ser bloqueado
 
 ### ms-Progreso (8083)
