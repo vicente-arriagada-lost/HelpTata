@@ -1,0 +1,23 @@
+@use '../../src/styles/variables' as *;
+
+.footer {
+  background-color: $navy;
+}
+
+.colHeading {
+  font-size: 2.1rem;
+}
+
+.colText {
+  font-size: 1.55rem;
+  color: #c8d8ec;
+}
+
+.copyright {
+  border-color: $navy-light;
+}
+
+.copyrightText {
+  font-size: 1.55rem;
+  color: #a0b8d0;
+}

@@ -1,0 +1,58 @@
+// ── Colores principales ───────────────────────────────────────
+$navy:          #1e3a5f;
+$navy-light:    #2d527a;
+$navy-bg:       #eaf0f8;
+$navy-border:   #c0d4ec;
+$navy-border-2: #d0dae8;
+
+// ── Texto ─────────────────────────────────────────────────────
+$dark:          #1a1a2e;
+$gray-text:     #374151;
+$gray-muted:    #6b7280;
+$gray-muted-2:  #9ca3af;
+
+// ── Grises neutros ────────────────────────────────────────────
+$gray-border:   #e5e7eb;
+$gray-bg:       #f9fafb;
+$white:         #ffffff;
+
+// ── Verde ─────────────────────────────────────────────────────
+$green:         #16a34a;
+$green-dark:    #166534;
+$green-bg:      #dcfce7;
+$green-progress:#1a7a45;
+$green-rule:    #15803d;
+
+// ── Rojo ──────────────────────────────────────────────────────
+$red:           #991b1b;
+$red-bg:        #fee2e2;
+$red-light:     #fef2f2;
+$red-border:    #fca5a5;
+$red-error:     #dc2626;
+
+// ── Amarillo/Amber ────────────────────────────────────────────
+$amber:         #f59e0b;
+$amber-bg:      #fef3c7;
+$amber-dark:    #b45309;
+$yellow-bg:     #fef9c3;
+$yellow-dark:   #854d0e;
+
+// ── Gradientes ────────────────────────────────────────────────
+$gradient-navy: linear-gradient(to bottom, $navy, $navy-light);
+
+// ── Bordes redondeados ────────────────────────────────────────
+$radius-sm:  10px;
+$radius-md:  12px;
+$radius-lg:  16px;
+$radius-xl:  20px;
+$radius-2xl: 24px;
+
+// ── Tipografía ────────────────────────────────────────────────
+$fs-sm:   1.2rem;
+$fs-base: 1.3rem;
+$fs-md:   1.4rem;
+$fs-lg:   1.5rem;
+$fs-xl:   1.6rem;
+$fs-2xl:  1.8rem;
+$fs-3xl:  2rem;
+$fs-4xl:  3rem;

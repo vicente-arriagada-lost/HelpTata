@@ -1,0 +1,95 @@
+@use '../../src/styles/variables' as *;
+
+.pageWrapper {
+  background: $gradient-navy;
+}
+
+.navBtn {
+  background-color: $white;
+  color: $navy;
+  font-size: 1.75rem;
+  font-weight: 700;
+  padding: 1rem 2.2rem;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+}
+
+.heading {
+  font-size: clamp(2.6rem, 4vw, 3.6rem);
+  color: $navy;
+}
+
+.videoContainer {
+  border: 3px solid $navy-border;
+  position: relative;
+}
+
+.loadingBox {
+  height: 320px;
+  background-color: #f1f5f9;
+}
+
+.loadingText {
+  font-size: 1.6rem;
+  color: $gray-muted;
+}
+
+.errorBox {
+  height: 320px;
+  background-color: $red-light;
+}
+
+.errorText {
+  font-size: 1.6rem;
+  color: $red-error;
+}
+
+.videoEl {
+  display: block;
+  max-height: 480px;
+  background-color: #000;
+}
+
+.videoInner {
+  position: relative;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.playBtn {
+  background-color: $navy;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  padding: 1.2rem 2.8rem;
+  border-radius: 50px;
+  border: 3px solid #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.instruction {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: $gray-text;
+}
+
+.startBtn {
+  background-color: $navy;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  padding: 1.1rem;
+}

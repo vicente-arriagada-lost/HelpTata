@@ -1,0 +1,108 @@
+@use '../../src/styles/variables' as *;
+
+.pageWrapper {
+  background: $gradient-navy;
+}
+
+.formCard {
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+}
+
+.heading {
+  font-size: clamp(2.7rem, 5vw, 3.6rem);
+  color: $navy;
+}
+
+.subtext {
+  font-size: 1.65rem;
+  color: $gray-text;
+}
+
+.errorBox {
+  background-color: $red-light;
+  border: 2px solid $red-border;
+}
+
+.errorIcon {
+  color: $red-error;
+  flex-shrink: 0;
+}
+
+.errorText {
+  color: $red-error;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.label {
+  font-size: 1.65rem;
+  color: $navy;
+  font-weight: 600;
+}
+
+.inputBase {
+  width: 100%;
+  padding: 1.1rem 1.3rem;
+  font-size: 1.65rem;
+  border-radius: $radius-md;
+  outline: none;
+}
+
+.inputNormal {
+  border: 2px solid #a0b8d0;
+}
+
+.inputError {
+  border: 2px solid $red-error;
+}
+
+.fieldError {
+  color: $red-error;
+  font-size: 1.25rem;
+}
+
+.submitBtn {
+  background-color: $navy;
+  color: #fff;
+  font-size: 1.65rem;
+  font-weight: 800;
+  padding: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+.footerText {
+  font-size: 1.5rem;
+  color: $gray-text;
+}
+
+.footerLink {
+  color: $navy;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.passwordInput {
+  padding-right: 3.8rem;
+}
+
+.toggleBtn {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $gray-muted;
+  display: flex;
+  align-items: center;
+  padding: 0.3rem;
+
+  &:hover { color: $navy; }
+  &:focus { outline: 2px solid $navy; border-radius: 4px; }
+}

@@ -1,0 +1,106 @@
+@use '../../src/styles/variables' as *;
+
+.pageWrapper {
+  background: $gradient-navy;
+}
+
+.loadingCard {
+  max-width: 500px;
+  width: 90%;
+}
+
+.loadingText {
+  font-size: 2rem;
+  color: $navy;
+  font-weight: 700;
+}
+
+.errorText {
+  font-size: 2rem;
+  color: $red-error;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.navBtn {
+  background-color: $white;
+  color: $navy;
+  font-size: 1.75rem;
+  font-weight: 700;
+  padding: 1rem 2.2rem;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+}
+
+// Results screen
+.resultHeading {
+  font-size: clamp(2.7rem, 4vw, 3.7rem);
+  color: $navy;
+}
+
+.resultText {
+  font-size: 1.8rem;
+  color: $gray-text;
+}
+
+.answerLabel {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $dark;
+}
+
+.returnBtn {
+  background-color: $navy;
+  color: #fff;
+  font-size: 1.65rem;
+  font-weight: 800;
+  padding: 1.1rem;
+}
+
+// Quiz screen
+.progressLabel {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $gray-text;
+}
+
+.progressPct {
+  font-size: 1.75rem;
+  color: $navy;
+  font-weight: 800;
+}
+
+.progressBarTrack {
+  background-color: $gray-border;
+  height: 14px;
+}
+
+.progressBarFill {
+  background-color: $navy;
+  height: 14px;
+}
+
+.questionHeading {
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  color: $dark;
+}
+
+.noAnswerError {
+  color: $red-error;
+  font-size: 1.15rem;
+  background-color: $red-light;
+  border: 2px solid $red-border;
+}
+
+.optionLetter {
+  font-size: 1.75rem;
+}
+
+.nextBtn {
+  background-color: $green-progress;
+  color: #fff;
+  font-size: 1.65rem;
+  font-weight: 800;
+  padding: 1.1rem;
+}

@@ -1,0 +1,112 @@
+@use '../../src/styles/variables' as *;
+
+.pageWrapper {
+  background-color: #f5f7fa;
+}
+
+// ── Hero ──
+.heroSection {
+  background-color: $navy;
+}
+
+.heroHeading {
+  font-size: clamp(3.2rem, 5vw, 5.2rem);
+  line-height: 1.2;
+}
+
+.heroSubtext {
+  font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+  font-weight: 600;
+  opacity: 0.95;
+  max-width: 700px;
+}
+
+.heroBtn {
+  background-color: #2ecc71;
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 800;
+  padding: 1.1rem 3rem;
+}
+
+// ── Video intro ──
+.videoSection {
+  background-color: $white;
+}
+
+.sectionHeading {
+  font-size: clamp(2.4rem, 3.5vw, 3.4rem);
+  color: $navy;
+}
+
+.videoWrapper {
+  --plyr-color-main: #2ecc71;
+  position: relative;
+}
+
+.videoEl {
+  width: 100%;
+  display: block;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.videoPlayBtn {
+  background-color: $navy;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  padding: 1.2rem 2.8rem;
+  border-radius: 50px;
+  border: 3px solid #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+// ── Cursos ──
+.coursesSection {
+  background-color: #f5f7fa;
+}
+
+.loadingText {
+  font-size: 1.8rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.errorBox {
+  background-color: $red-light;
+  border: 2px solid $red-border;
+  max-width: 600px;
+}
+
+.errorText {
+  font-size: 1.8rem;
+  color: $red-error;
+  font-weight: 700;
+}
+
+.emptyText {
+  font-size: 1.8rem;
+  color: #4b5563;
+}
+
+// ── TataBot ──
+.tataBotSection {
+  background-color: $white;
+}
+
+.tataBotCard {
+  border: 2px solid $navy-border-2;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}

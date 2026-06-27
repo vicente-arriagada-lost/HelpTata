@@ -1,0 +1,56 @@
+@use '../../styles/variables' as *;
+
+.pageWrapper {
+  background: $gradient-navy;
+}
+
+.backBtn {
+  background-color: $white;
+  color: $navy;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 0.8rem 1.8rem;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+}
+
+.avatarBox {
+  width: 120px;
+  height: 120px;
+  background-color: $amber-bg;
+}
+
+.avatarIcon {
+  color: $amber;
+}
+
+.panelHeading {
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  color: $navy;
+}
+
+.welcomeText {
+  font-size: 1.6rem;
+  color: $gray-text;
+}
+
+.sectionCard {
+  background-color: $navy-bg;
+  border: 2px solid $navy-border;
+  cursor: pointer;
+}
+
+.sectionIcon {
+  color: $navy;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  color: $navy;
+}
+
+.sectionDesc {
+  font-size: 1.5rem;
+  color: $gray-text;
+}

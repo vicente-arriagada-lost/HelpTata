@@ -1,0 +1,83 @@
+@use '../../src/styles/variables' as *;
+
+.botHeading {
+  font-size: clamp(1.8rem, 4vw, 2.2rem);
+  color: $navy;
+}
+
+.botHeadingIcon {
+  color: $navy;
+}
+
+.botSubtext {
+  font-size: clamp(1.45rem, 3.5vw, 1.7rem);
+  font-weight: 600;
+  color: $gray-text;
+}
+
+.messagesArea {
+  background-color: #f0f5fb;
+  min-height: 380px;
+  max-height: 600px;
+  border: 2px solid $navy-border-2;
+}
+
+// Message bubbles — dynamic colors (user vs bot) stay inline
+.messageBubble {
+  padding: clamp(0.9rem, 2vw, 1.1rem) clamp(1.1rem, 2.5vw, 1.6rem);
+  max-width: 92%;
+  font-size: clamp(1.4rem, 3.5vw, 1.6rem);
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.typingIndicatorBox {
+  background-color: $white;
+  border: 2px solid $navy-border-2;
+}
+
+.typingDot {
+  background-color: $navy;
+}
+
+// Step bubble in bot messages
+.stepWrapper {
+  margin-bottom: 0.85rem;
+}
+
+.stepNumber {
+  width: 2.2rem;
+  height: 2.2rem;
+  background-color: #2ecc71;
+  color: #fff;
+  font-size: 1.1rem;
+  margin-top: 0.1rem;
+}
+
+// Input area
+.inputField {
+  padding: clamp(1rem, 2vw, 1.2rem) clamp(1.1rem, 2.5vw, 1.6rem);
+  font-size: clamp(1.35rem, 3.5vw, 1.5rem);
+}
+
+.inputNormal {
+  border: 2px solid #a0b8d0;
+}
+
+.inputError {
+  border: 2px solid $red-error;
+}
+
+.inputErrorMsg {
+  color: $red-error;
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.sendBtn {
+  background-color: $navy;
+  padding: 1.1rem 1.6rem;
+  min-width: 56px;
+  min-height: 56px;
+}

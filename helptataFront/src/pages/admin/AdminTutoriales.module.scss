@@ -1,0 +1,135 @@
+@use '../../styles/variables' as *;
+
+.pageWrapper {
+  background: $gradient-navy;
+}
+
+.backBtn {
+  background-color: $white;
+  color: $navy;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 0.8rem 1.8rem;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+}
+
+.headerIcon {
+  color: $navy;
+}
+
+.pageHeading {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: $navy;
+}
+
+.searchIcon {
+  color: $gray-muted;
+}
+
+.searchInput {
+  padding-left: 3.5rem;
+  padding-right: 1.2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 1.5rem;
+  border: 2px solid $navy-border-2;
+}
+
+.loadingText {
+  font-size: 1.6rem;
+  color: #4b5563;
+}
+
+.countText {
+  font-size: 1.4rem;
+  color: $gray-muted;
+}
+
+.tableWrapper {
+  border: 2px solid $gray-border;
+}
+
+.tableHead {
+  background-color: $navy-bg;
+}
+
+.th {
+  font-size: 1.3rem;
+  color: $navy;
+}
+
+.tdText {
+  font-size: 1.4rem;
+  color: $gray-text;
+}
+
+.tdBold {
+  font-size: 1.4rem;
+  color: $gray-text;
+  font-weight: 600;
+}
+
+.emptyCell {
+  font-size: 1.5rem;
+  color: $gray-muted;
+}
+
+.badge {
+  font-size: 1.2rem;
+}
+
+.deleteBtn {
+  background-color: $red-bg;
+  color: $red;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+// Modal
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.modalTitle {
+  font-size: 1.8rem;
+  color: $dark;
+}
+
+.modalCloseBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modalCloseIcon {
+  color: $gray-muted;
+}
+
+.modalText {
+  font-size: 1.5rem;
+  color: $gray-text;
+  margin-bottom: 2rem;
+}
+
+.modalDeleteBtn {
+  background-color: $red;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 0.9rem;
+  border: none;
+}
+
+.modalCancelBtn {
+  background-color: $gray-border;
+  color: $dark;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 0.9rem;
+  border: none;
+  cursor: pointer;
+}

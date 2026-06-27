@@ -1,0 +1,141 @@
+@use '../../src/styles/variables' as *;
+
+.pageWrapper {
+  background-color: #f5f7fa;
+}
+
+.heading {
+  font-size: clamp(2.6rem, 4vw, 3.8rem);
+  color: $navy;
+  line-height: 1.25;
+}
+
+.subtext {
+  font-size: clamp(1.65rem, 2vw, 2rem);
+  font-weight: 600;
+  color: $gray-text;
+}
+
+.card {
+  border: 2px solid $navy-border-2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
+
+.sectionHeading {
+  font-size: 2.2rem;
+  color: $navy;
+}
+
+.videoWrapper {
+  --plyr-color-main: #2ecc71;
+  position: relative;
+}
+
+.videoEl {
+  width: 100%;
+  display: block;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.videoPlayBtn {
+  background-color: $navy;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  padding: 1.2rem 2.8rem;
+  border-radius: 50px;
+  border: 3px solid #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.controlsBox {
+  background-color: $navy-bg;
+  border: 2px solid $navy-border;
+}
+
+.controlsHeading {
+  font-size: 1.8rem;
+  color: $navy;
+}
+
+.controlsIntro {
+  font-size: 1.4rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.controlItem {
+  color: $dark;
+}
+
+.controlIconBox {
+  background-color: $navy-border-2;
+  border: 2px dashed #a0b4cc;
+}
+
+.controlIcon {
+  color: $navy;
+}
+
+.controlLabel {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.controlsTip {
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.quizText {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: $gray-text;
+}
+
+.quizBtn {
+  background-color: $green-progress;
+  color: #fff;
+  font-size: 1.65rem;
+  font-weight: 800;
+  padding: 1.1rem;
+}
+
+.progressCard {
+  border: 2px solid $navy-border-2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
+
+.progressHeading {
+  font-size: 1.85rem;
+  color: $navy;
+}
+
+.progressText {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $gray-text;
+}
+
+.progressPct {
+  color: $navy;
+  font-weight: 800;
+}
+
+.tataBotCard {
+  border: 2px solid $navy-border-2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
