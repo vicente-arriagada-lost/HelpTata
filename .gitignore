@@ -1,0 +1,39 @@
+# ── Dependencias ─────────────────────────────────────────────
+node_modules/
+*/node_modules/
+
+# ── Builds ───────────────────────────────────────────────────
+dist/
+*/dist/
+*/target/
+*/.mvn/repository/
+
+# ── Variables de entorno (contienen credenciales) ─────────────
+.env
+**/.env
+.env.docker
+
+# ── Logs locales ─────────────────────────────────────────────
+logs/
+*.log
+
+# ── App móvil (no va al servidor) ────────────────────────────
+HelpTataApp/
+
+# ── Scripts de arranque local (reemplazados por Docker) ───────
+start-helptata.sh
+stop-helptata.sh
+
+# ── Archivos de desarrollo local ──────────────────────────────
+instrucciones.txt
+funcionalaia.md
+
+# ── IDE y SO ─────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ── Claude AI context ─────────────────────────────────────────
+.claude/
