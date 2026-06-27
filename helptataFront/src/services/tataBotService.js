@@ -1,7 +1,7 @@
-import axios from 'axios'
+import { crearCliente } from './axiosConfig'
 
-const BASE_URL = 'http://localhost:8087/api/tatabot'
+const api = crearCliente(import.meta.env.VITE_MS_TATABOT_URL || 'http://localhost:8087')
 
 export function enviarMensajeTataBot(mensaje, historial = []) {
-  return axios.post(`${BASE_URL}/chat`, { mensaje, historial })
+  return api.post('/api/tatabot/chat', { mensaje, historial })
 }
