@@ -18,14 +18,14 @@ VITE_MS_PREGUNTAS_URL=http://localhost:8086\n\
 VITE_MS_TATABOT_URL=http://localhost:8087\n\
 VITE_MS_LOGS_URL=http://localhost:8081\n" > .env; \
 else \
-  printf "VITE_MS_USUARIO_URL=https://ms-usuario.%s\n\
-VITE_MS_TUTORIALES_URL=https://ms-tutoriales.%s\n\
-VITE_MS_PROGRESO_URL=https://ms-progreso.%s\n\
-VITE_MS_DIRECCION_URL=https://ms-direccion.%s\n\
-VITE_MS_EVALUACIONES_URL=https://ms-evaluaciones.%s\n\
-VITE_MS_PREGUNTAS_URL=https://ms-preguntas.%s\n\
-VITE_MS_TATABOT_URL=https://ms-tatabot.%s\n\
-VITE_MS_LOGS_URL=https://ms-logs.%s\n" \
+  printf "VITE_MS_USUARIO_URL=https://%s\n\
+VITE_MS_TUTORIALES_URL=https://%s\n\
+VITE_MS_PROGRESO_URL=https://%s\n\
+VITE_MS_DIRECCION_URL=https://%s\n\
+VITE_MS_EVALUACIONES_URL=https://%s\n\
+VITE_MS_PREGUNTAS_URL=https://%s\n\
+VITE_MS_TATABOT_URL=https://%s\n\
+VITE_MS_LOGS_URL=https://%s\n" \
 "$SERVER_IP" "$SERVER_IP" "$SERVER_IP" "$SERVER_IP" \
 "$SERVER_IP" "$SERVER_IP" "$SERVER_IP" "$SERVER_IP" > .env; \
 fi
