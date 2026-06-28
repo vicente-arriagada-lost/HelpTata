@@ -14,6 +14,7 @@ package com.Evaluaciones.ms;
 // Ejecutar con: ./mvnw test
 // =============================================================
 
+import com.Evaluaciones.ms.clients.LogClient;
 import com.Evaluaciones.ms.models.dto.EvaluacionDTO;
 import com.Evaluaciones.ms.models.entities.Evaluacion;
 import com.Evaluaciones.ms.models.request.AgregarEvaluacion;
@@ -43,6 +44,9 @@ class EvaluacionServiceTest {
 
     @Mock
     private EvaluacionRepository evaluacionRepository;
+
+    @Mock
+    private LogClient logClient;
 
     //* @InjectMocks crea una instancia real del servicio e inyecta el mock
     @InjectMocks

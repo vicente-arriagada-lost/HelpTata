@@ -16,6 +16,7 @@ package com.Usuario.ms;
 // =============================================================
 
 import com.Usuario.ms.clients.DireccionClient;
+import com.Usuario.ms.clients.LogClient;
 import com.Usuario.ms.config.CustomUserDetailsService;
 import com.Usuario.ms.config.JwtUtil;
 import com.Usuario.ms.models.dto.UsuarioDTO;
@@ -52,6 +53,7 @@ class UsuarioServiceTest {
     //* Mocks: simulan los colaboradores del servicio sin tocar BD ni red
     @Mock private UsuarioRepository usuarioRepository;
     @Mock private DireccionClient direccionClient;
+    @Mock private LogClient logClient;
     @Mock private JwtUtil jwtUtil;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private AuthenticationManager authenticationManager;
@@ -235,6 +237,6 @@ class UsuarioServiceTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Credenciales inválidas"));
 
-        assertThrows(BadCredentialsException.class, () -> usuarioService.login(req));
+        assertThrows(ResponseStatusException.class, () -> usuarioService.login(req));
     }
 }
