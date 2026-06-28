@@ -7,6 +7,7 @@ dist/
 */dist/
 */target/
 */.mvn/repository/
+**/.vite/
 
 # ── Variables de entorno (contienen credenciales) ─────────────
 .env
