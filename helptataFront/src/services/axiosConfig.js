@@ -57,7 +57,7 @@ export function crearCliente(baseURL) {
   cliente.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 && localStorage.getItem('helptata_token')) {
         localStorage.removeItem('helptata_token')
         localStorage.removeItem('helptata_user')
         window.location.href = '/login'

@@ -58,10 +58,10 @@ export function Login({ onLogin, onNavigate }) {
       // Notificar al componente padre para actualizar la navegación
       onLogin()
     } catch (err) {
-      // Mostrar error de credenciales si el backend devuelve 401, o un error genérico
       const msg = err.response?.status === 401
         ? 'Correo o contraseña incorrectos.'
         : 'No se pudo conectar con el servidor. Intenta más tarde.'
+      setPassword('')
       setErrors({ credentials: msg })
     } finally {
       setLoading(false)
