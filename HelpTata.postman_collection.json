@@ -1,0 +1,425 @@
+{
+  "info": {
+    "name": "HelpTata API",
+    "description": "Colección completa de endpoints de HelpTata. Pasos: 1) Ejecuta 'Login' y copia el token. 2) Pégalo en la variable {{token}} del environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "https://helptata.cl", "type": "string" },
+    { "key": "token",    "value": "",                    "type": "string" }
+  ],
+  "item": [
+
+    {
+      "name": "🔐 Autenticación",
+      "item": [
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "var json = pm.response.json();",
+            "if (json.token) { pm.collectionVariables.set('token', json.token); pm.test('Token guardado ✔', () => true); }"
+          ], "type": "text/javascript" }}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"tu@correo.com\",\n  \"password\": \"tu_contraseña\"\n}" },
+            "url": { "raw": "{{base_url}}/api/usuarios/login", "host": ["{{base_url}}"], "path": ["api","usuarios","login"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "👤 Usuarios",
+      "item": [
+        {
+          "name": "GET todos los usuarios",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/usuarios", "host": ["{{base_url}}"], "path": ["api","usuarios"] } }
+        },
+        {
+          "name": "GET usuario por ID",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/usuarios/1", "host": ["{{base_url}}"], "path": ["api","usuarios","1"] } }
+        },
+        {
+          "name": "POST crear usuario",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"run_usuario\": \"12345678\",\n  \"dvrun_usuario\": \"9\",\n  \"pnombre_usuario\": \"Juan\",\n  \"snombre_usuario\": \"Carlos\",\n  \"papellido_usuario\": \"Pérez\",\n  \"sapellido_usuario\": \"González\",\n  \"fecha_nac_usuario\": \"1960-05-15\",\n  \"telefono_usuario\": \"+56912345678\",\n  \"password_usuario\": \"contraseña123\",\n  \"id_direccion\": null\n}" },
+            "url": { "raw": "{{base_url}}/api/usuarios", "host": ["{{base_url}}"], "path": ["api","usuarios"] }
+          }
+        },
+        {
+          "name": "PUT actualizar usuario",
+          "request": {
+            "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"pnombre_usuario\": \"Juan\",\n  \"snombre_usuario\": \"Carlos\",\n  \"papellido_usuario\": \"Pérez\",\n  \"sapellido_usuario\": \"González\",\n  \"fecha_nac_usuario\": \"1960-05-15\",\n  \"telefono_usuario\": \"+56912345678\",\n  \"id_direccion\": null\n}" },
+            "url": { "raw": "{{base_url}}/api/usuarios/1", "host": ["{{base_url}}"], "path": ["api","usuarios","1"] }
+          }
+        },
+        {
+          "name": "DELETE usuario",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/usuarios/1", "host": ["{{base_url}}"], "path": ["api","usuarios","1"] } }
+        }
+      ]
+    },
+
+    {
+      "name": "📧 Emails",
+      "item": [
+        {
+          "name": "GET todos los emails",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/emails", "host": ["{{base_url}}"], "path": ["api","emails"] } }
+        },
+        {
+          "name": "GET email por ID",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/emails/1", "host": ["{{base_url}}"], "path": ["api","emails","1"] } }
+        },
+        {
+          "name": "POST crear email",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"nuevo@correo.com\"\n}" },
+            "url": { "raw": "{{base_url}}/api/emails", "host": ["{{base_url}}"], "path": ["api","emails"] }
+          }
+        },
+        {
+          "name": "PUT actualizar email",
+          "request": {
+            "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"actualizado@correo.com\"\n}" },
+            "url": { "raw": "{{base_url}}/api/emails/1", "host": ["{{base_url}}"], "path": ["api","emails","1"] }
+          }
+        },
+        {
+          "name": "DELETE email",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/emails/1", "host": ["{{base_url}}"], "path": ["api","emails","1"] } }
+        }
+      ]
+    },
+
+    {
+      "name": "🎓 Roles",
+      "item": [
+        {
+          "name": "GET todos los roles",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/roles", "host": ["{{base_url}}"], "path": ["api","roles"] } }
+        },
+        {
+          "name": "GET rol por ID",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/roles/1", "host": ["{{base_url}}"], "path": ["api","roles","1"] } }
+        },
+        {
+          "name": "POST crear rol",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo_rol\": \"ADMIN\"\n}" },
+            "url": { "raw": "{{base_url}}/api/roles", "host": ["{{base_url}}"], "path": ["api","roles"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📚 Tutoriales",
+      "item": [
+        {
+          "name": "GET todos los tutoriales",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/tutoriales", "host": ["{{base_url}}"], "path": ["api","tutoriales"] } }
+        },
+        {
+          "name": "GET tutorial por ID",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/tutoriales/1", "host": ["{{base_url}}"], "path": ["api","tutoriales","1"] } }
+        },
+        {
+          "name": "GET tutoriales por categoría",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/tutoriales/categoria/tecnologia", "host": ["{{base_url}}"], "path": ["api","tutoriales","categoria","tecnologia"] } }
+        },
+        {
+          "name": "GET tutoriales por nivel",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/tutoriales/nivel/basico", "host": ["{{base_url}}"], "path": ["api","tutoriales","nivel","basico"] } }
+        },
+        {
+          "name": "POST crear tutorial",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre_tutorial\": \"Cómo usar WhatsApp\",\n  \"descripcion_tutorial\": \"Aprende a enviar mensajes\",\n  \"categoria_tutorial\": \"comunicacion\",\n  \"nivel_tutorial\": \"basico\"\n}" },
+            "url": { "raw": "{{base_url}}/api/tutoriales", "host": ["{{base_url}}"], "path": ["api","tutoriales"] }
+          }
+        },
+        {
+          "name": "PUT actualizar tutorial",
+          "request": {
+            "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre_tutorial\": \"Cómo usar WhatsApp (actualizado)\",\n  \"descripcion_tutorial\": \"Aprende a enviar mensajes y llamar\",\n  \"categoria_tutorial\": \"comunicacion\",\n  \"nivel_tutorial\": \"basico\"\n}" },
+            "url": { "raw": "{{base_url}}/api/tutoriales/1", "host": ["{{base_url}}"], "path": ["api","tutoriales","1"] }
+          }
+        },
+        {
+          "name": "DELETE tutorial",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/tutoriales/1", "host": ["{{base_url}}"], "path": ["api","tutoriales","1"] } }
+        }
+      ]
+    },
+
+    {
+      "name": "🖼️ Fotos",
+      "item": [
+        {
+          "name": "GET todas las fotos",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/fotos", "host": ["{{base_url}}"], "path": ["api","fotos"] } }
+        },
+        {
+          "name": "GET fotos por tutorial",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/fotos/tutorial/1", "host": ["{{base_url}}"], "path": ["api","fotos","tutorial","1"] } }
+        },
+        {
+          "name": "POST crear foto",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"url_foto\": \"https://helptata.cl/imagenes/foto1.jpg\",\n  \"descripcion_foto\": \"Pantalla de inicio de WhatsApp\",\n  \"id_tutorial\": 1\n}" },
+            "url": { "raw": "{{base_url}}/api/fotos", "host": ["{{base_url}}"], "path": ["api","fotos"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📊 Progreso",
+      "item": [
+        {
+          "name": "GET todo el progreso",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/progreso", "host": ["{{base_url}}"], "path": ["api","progreso"] } }
+        },
+        {
+          "name": "GET progreso por usuario",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/progreso/usuario/1", "host": ["{{base_url}}"], "path": ["api","progreso","usuario","1"] } }
+        },
+        {
+          "name": "GET progreso usuario+tutorial",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/progreso/usuario/1/tutorial/1", "host": ["{{base_url}}"], "path": ["api","progreso","usuario","1","tutorial","1"] } }
+        },
+        {
+          "name": "POST crear progreso",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"id_usuario\": 1,\n  \"id_tutorial\": 1,\n  \"recursos_completados\": 0,\n  \"cantidad_recursos_totales\": 5,\n  \"preguntas_acertadas\": 0,\n  \"preguntas_falladas\": 0\n}" },
+            "url": { "raw": "{{base_url}}/api/progreso", "host": ["{{base_url}}"], "path": ["api","progreso"] }
+          }
+        },
+        {
+          "name": "PUT actualizar progreso",
+          "request": {
+            "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"recursos_completados\": 3,\n  \"cantidad_recursos_totales\": 5,\n  \"preguntas_acertadas\": 2,\n  \"preguntas_falladas\": 1\n}" },
+            "url": { "raw": "{{base_url}}/api/progreso/1", "host": ["{{base_url}}"], "path": ["api","progreso","1"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📝 Evaluaciones",
+      "item": [
+        {
+          "name": "GET todas las evaluaciones",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/evaluaciones", "host": ["{{base_url}}"], "path": ["api","evaluaciones"] } }
+        },
+        {
+          "name": "GET evaluaciones por tutorial",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/evaluaciones/tutorial/1", "host": ["{{base_url}}"], "path": ["api","evaluaciones","tutorial","1"] } }
+        },
+        {
+          "name": "POST crear evaluación",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre_evaluacion\": \"Quiz WhatsApp\",\n  \"nivel_evaluacion\": \"basico\",\n  \"tipo_evaluacion\": \"opcion_multiple\",\n  \"id_tutorial\": 1\n}" },
+            "url": { "raw": "{{base_url}}/api/evaluaciones", "host": ["{{base_url}}"], "path": ["api","evaluaciones"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "❓ Cuestionarios",
+      "item": [
+        {
+          "name": "GET todos los cuestionarios",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/cuestionarios", "host": ["{{base_url}}"], "path": ["api","cuestionarios"] } }
+        },
+        {
+          "name": "GET cuestionario por tutorial",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/cuestionarios/tutorial/1", "host": ["{{base_url}}"], "path": ["api","cuestionarios","tutorial","1"] } }
+        },
+        {
+          "name": "POST responder cuestionario",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"id_usuario\": 1,\n  \"respuestas\": [\n    { \"id_pregunta\": 1, \"id_alternativa\": 2 },\n    { \"id_pregunta\": 2, \"id_alternativa\": 5 }\n  ]\n}" },
+            "url": { "raw": "{{base_url}}/api/cuestionarios/1/responder", "host": ["{{base_url}}"], "path": ["api","cuestionarios","1","responder"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🔤 Preguntas",
+      "item": [
+        {
+          "name": "GET todas las preguntas",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/preguntas", "host": ["{{base_url}}"], "path": ["api","preguntas"] } }
+        },
+        {
+          "name": "GET preguntas por cuestionario",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/preguntas/cuestionario/1", "host": ["{{base_url}}"], "path": ["api","preguntas","cuestionario","1"] } }
+        },
+        {
+          "name": "POST crear pregunta",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"texto_pregunta\": \"¿Cómo se envía un mensaje en WhatsApp?\",\n  \"id_cuestionario\": 1\n}" },
+            "url": { "raw": "{{base_url}}/api/preguntas", "host": ["{{base_url}}"], "path": ["api","preguntas"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🔘 Alternativas",
+      "item": [
+        {
+          "name": "GET alternativas por pregunta",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/alternativas/pregunta/1", "host": ["{{base_url}}"], "path": ["api","alternativas","pregunta","1"] } }
+        },
+        {
+          "name": "POST crear alternativa",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"texto_alternativa\": \"Presionar el ícono de enviar\",\n  \"es_correcta\": true,\n  \"id_pregunta\": 1\n}" },
+            "url": { "raw": "{{base_url}}/api/alternativas", "host": ["{{base_url}}"], "path": ["api","alternativas"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🏆 Resultados",
+      "item": [
+        {
+          "name": "GET resultados por usuario",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/resultados/usuario/1", "host": ["{{base_url}}"], "path": ["api","resultados","usuario","1"] } }
+        },
+        {
+          "name": "GET resultados por cuestionario",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/resultados/cuestionario/1", "host": ["{{base_url}}"], "path": ["api","resultados","cuestionario","1"] } }
+        },
+        {
+          "name": "GET historial usuario+cuestionario",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/resultados/usuario/1/cuestionario/1", "host": ["{{base_url}}"], "path": ["api","resultados","usuario","1","cuestionario","1"] } }
+        }
+      ]
+    },
+
+    {
+      "name": "🗺️ Direcciones",
+      "item": [
+        {
+          "name": "GET países",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/paises", "host": ["{{base_url}}"], "path": ["api","paises"] } }
+        },
+        {
+          "name": "GET regiones",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/regiones", "host": ["{{base_url}}"], "path": ["api","regiones"] } }
+        },
+        {
+          "name": "GET ciudades",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/ciudades", "host": ["{{base_url}}"], "path": ["api","ciudades"] } }
+        },
+        {
+          "name": "GET comunas",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/comunas", "host": ["{{base_url}}"], "path": ["api","comunas"] } }
+        },
+        {
+          "name": "POST crear dirección",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"calle_direccion\": \"Av. Principal\",\n  \"numero_direccion\": \"123\",\n  \"id_comuna\": 1\n}" },
+            "url": { "raw": "{{base_url}}/api/direcciones", "host": ["{{base_url}}"], "path": ["api","direcciones"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🤖 TataBot (IA)",
+      "item": [
+        {
+          "name": "POST chat con TataBot",
+          "request": {
+            "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"mensaje\": \"¿Cómo envío un mensaje por WhatsApp?\",\n  \"historial\": []\n}" },
+            "url": { "raw": "{{base_url}}/api/tatabot/chat", "host": ["{{base_url}}"], "path": ["api","tatabot","chat"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📋 Logs",
+      "item": [
+        {
+          "name": "GET todos los logs",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/logs", "host": ["{{base_url}}"], "path": ["api","logs"] } }
+        },
+        {
+          "name": "GET logs por tipo (ERROR / INFO / WARNING)",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/logs/tipo/ERROR", "host": ["{{base_url}}"], "path": ["api","logs","tipo","ERROR"] } }
+        },
+        {
+          "name": "GET logs por usuario",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/logs/usuario/1", "host": ["{{base_url}}"], "path": ["api","logs","usuario","1"] } }
+        },
+        {
+          "name": "GET logs por servicio",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/logs/servicio/ms-usuario", "host": ["{{base_url}}"], "path": ["api","logs","servicio","ms-usuario"] } }
+        }
+      ]
+    }
+
+  ]
+}
