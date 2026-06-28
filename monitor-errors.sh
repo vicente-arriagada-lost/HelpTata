@@ -23,7 +23,7 @@ docker compose logs -f --no-color 2>&1 \
 | grep -v --line-buffered -E \
     "PostgreSQLDialect|open-in-view|UserDetailsManager|deprecated|InitializeUser|AuthenticationProvider" \
 | grep -v --line-buffered -E \
-    "No static resource|NoResourceFoundException|GlobalException.*request|No se encontró progreso para" \
+    "No static resource|NoResourceFoundException|GlobalException.*request '/'|No se encontró progreso para" \
 | grep -v --line-buffered -E \
     "trust.*authentication|no usable system locales|time=\".*level=warning" \
 | grep -v --line-buffered -E \
