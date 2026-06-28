@@ -41,9 +41,8 @@ docker compose logs -f --no-color 2>&1 \
     # ── Mensaje (lo que viene después del |) ─────────────────────────────────
     mensaje=$(echo "$linea" | cut -d'|' -f2- | sed 's/^[[:space:]]*//')
 
-    # ── Saltar líneas vacías o solo timestamp ─────────────────────────────────
-    sin_meta=$(echo "$mensaje" | sed 's/[0-9T:Z.\- ]*\(INFO\|WARN\|ERROR\|DEBUG\) [0-9]* --- \[.*\] [^ ]* *: *//')
-    [ -z "$(echo "$sin_meta" | tr -d '[:space:]')" ] && continue
+    # ── Saltar líneas vacías ──────────────────────────────────────────────────
+    [ -z "$(echo "$mensaje" | tr -d '[:space:]')" ] && continue
 
     # ── Nivel ─────────────────────────────────────────────────────────────────
     if echo "$mensaje" | grep -qiE "\bERROR\b"; then
