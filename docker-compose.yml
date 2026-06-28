@@ -209,5 +209,17 @@ services:
       - ms-tutoriales
     restart: unless-stopped
 
+  # ── Portainer — panel de monitoreo de contenedores (9443) ──
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: helptata-portainer
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    restart: unless-stopped
+
 volumes:
   postgres-data:
+  portainer-data:
