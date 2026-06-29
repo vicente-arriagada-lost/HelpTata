@@ -1,0 +1,13 @@
+VIDEOS TUTORIALES - HELPTATA
+=============================
+
+Los videos de los tutoriales de la plataforma están disponibles en Google Drive:
+
+https://drive.google.com/drive/folders/1bsLszzkSL_TVRZBT0vQkRBznyYHTXsZX?usp=drive_link
+
+Contenido:
+- VideoIntroductorio.mp4       — Presentación general de HelpTata
+- Internet Seguro.mp4          — Tutorial: uso seguro de internet
+- Protección contra Estafas Digitales.mp4 — Tutorial: cómo evitar estafas en línea
+- Uso de Smartphones.mp4       — Tutorial: manejo básico de smartphones
+- tutocuest.mp4                — Video instructivo para completar cuestionarios
