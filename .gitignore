@@ -21,9 +21,8 @@ logs/
 # ── App móvil (no va al servidor) ────────────────────────────
 HelpTataApp/
 
-# ── Scripts de arranque local (reemplazados por Docker) ───────
-start-helptata.sh
-stop-helptata.sh
+# ── Scripts locales ───────────────────────────────────────────
+*.sh
 
 # ── Archivos de desarrollo local ──────────────────────────────
 instrucciones.txt
