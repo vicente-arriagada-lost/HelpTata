@@ -57,7 +57,7 @@ public class SecurityConfig {
                 // El email se crea durante el registro (sin token aún), debe ser público
                 .requestMatchers(HttpMethod.POST, "/api/emails").permitAll()
                 // Swagger disponible sin autenticar en desarrollo
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/**").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**").permitAll()
                 // Todo lo demás requiere un JWT válido
                 .anyRequest().authenticated()
             )
