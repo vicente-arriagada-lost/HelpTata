@@ -32,16 +32,21 @@ echo -e "${BOLD}║       Tests Unitarios — HelpTata                 ║${RESE
 echo -e "${BOLD}╚══════════════════════════════════════════════════╝${RESET}\n"
 
 # ── Limpiar target/ de root (creados por Docker) ─────────────────────────────
+# Detecta si hay archivos root dentro de target/ (no solo si el dir es no-escribible)
+tiene_archivos_root() {
+  find "$1" -user root -maxdepth 4 -print -quit 2>/dev/null | grep -q .
+}
+
 TARGETS_ROOT=()
 for ms in "${MS[@]}"; do
   DIR="$ROOT_DIR/$ms"
-  if [ -d "$DIR/target" ] && [ ! -w "$DIR/target" ]; then
+  if [ -d "$DIR/target" ] && ([ ! -w "$DIR/target" ] || tiene_archivos_root "$DIR/target"); then
     TARGETS_ROOT+=("$DIR/target")
   fi
 done
 
 if [ ${#TARGETS_ROOT[@]} -gt 0 ]; then
-  echo -e "${YELLOW}⚠ Carpetas target/ creadas por Docker (root) — limpiando...${RESET}"
+  echo -e "${YELLOW}⚠ Carpetas target/ con archivos de Docker (root) — limpiando...${RESET}"
   if sudo rm -rf "${TARGETS_ROOT[@]}" 2>/dev/null; then
     echo -e "${GREEN}✔ Limpieza completada${RESET}\n"
   else
@@ -72,6 +77,14 @@ for ms in "${MS[@]}"; do
   # Ejecutar tests capturando salida (clean evita conflictos con compilaciones previas)
   OUTPUT=$("$MVN" -f "$DIR/pom.xml" clean test -q 2>&1)
   EXIT_CODE=$?
+
+  # Si maven clean falla por archivos root-owned, limpiar con sudo y reintentar
+  if [ $EXIT_CODE -ne 0 ] && echo "$OUTPUT" | grep -q "Failed to delete"; then
+    echo -e "  ${YELLOW}⚠ Archivos de Docker bloqueando clean — limpiando con sudo...${RESET}"
+    sudo rm -rf "$DIR/target" 2>/dev/null
+    OUTPUT=$("$MVN" -f "$DIR/pom.xml" clean test -q 2>&1)
+    EXIT_CODE=$?
+  fi
 
   if [ $EXIT_CODE -eq 0 ]; then
     # Extraer cantidad de tests del resumen de Maven

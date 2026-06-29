@@ -20,6 +20,7 @@ package com.Progreso.ms;
 // Ejecutar con: ./mvnw test
 // =============================================================
 
+import com.Progreso.ms.clients.LogClient;
 import com.Progreso.ms.models.dto.ProgresoDTO;
 import com.Progreso.ms.models.entities.Progreso;
 import com.Progreso.ms.models.request.AgregarProgreso;
@@ -50,6 +51,9 @@ class ProgresoServiceTest {
 
     @Mock
     private ProgresoRepository progresoRepository;
+
+    @Mock
+    private LogClient logClient;
 
     //* @InjectMocks crea una instancia real del servicio e inyecta el mock
     @InjectMocks

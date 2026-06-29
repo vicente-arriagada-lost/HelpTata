@@ -14,6 +14,7 @@ package com.Tutoriales.ms;
 // Ejecutar con: ./mvnw test
 // =============================================================
 
+import com.Tutoriales.ms.clients.LogClient;
 import com.Tutoriales.ms.models.dto.TutorialDTO;
 import com.Tutoriales.ms.models.entities.Tutorial;
 import com.Tutoriales.ms.models.request.AgregarTutorial;
@@ -43,6 +44,9 @@ class TutorialServiceTest {
 
     @Mock
     private TutorialRepository tutorialRepository;
+
+    @Mock
+    private LogClient logClient;
 
     //* @InjectMocks crea una instancia real del servicio e inyecta los mocks
     @InjectMocks
