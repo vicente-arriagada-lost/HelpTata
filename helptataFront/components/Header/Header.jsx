@@ -57,7 +57,7 @@ export function Header({ user, onNavigate, showBackButton = false }) {
           {/* Navegación de escritorio */}
           <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-4">
             {/* Si hay usuario logueado: botón de perfil (+ Admin si corresponde). Si no: login + registro */}
-            {user ? (
+            {user && (
               <>
                 {/* Botón Admin solo visible para usuarios con rol ADMIN */}
                 {user.rol === 'ADMIN' && (
@@ -75,21 +75,6 @@ export function Header({ user, onNavigate, showBackButton = false }) {
                 >
                   <User size={30} aria-hidden="true" />
                   <span>Mi Perfil</span>
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => onNavigate('register')}
-                  className={`${styles.btnRegister} rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900`}
-                >
-                  Registrarse
-                </button>
-                <button
-                  onClick={() => onNavigate('login')}
-                  className={`${styles.btnLogin} bg-white rounded-xl hover:bg-blue-50 transition-colors focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900`}
-                >
-                  Iniciar Sesión
                 </button>
               </>
             )}
@@ -113,7 +98,7 @@ export function Header({ user, onNavigate, showBackButton = false }) {
         {/* Menú móvil desplegable */}
         {mobileMenuOpen && (
           <nav id="mobile-menu" aria-label="Menú móvil" className="md:hidden mt-5 space-y-4 pb-4">
-            {user ? (
+            {user && (
               <>
                 {user.rol === 'ADMIN' && (
                   <button
@@ -130,21 +115,6 @@ export function Header({ user, onNavigate, showBackButton = false }) {
                 >
                   <User size={28} aria-hidden="true" />
                   <span>Mi Perfil</span>
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => { onNavigate('register'); setMobileMenuOpen(false) }}
-                  className={`${styles.mobileBtnRegister} w-full rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900`}
-                >
-                  Registrarse
-                </button>
-                <button
-                  onClick={() => { onNavigate('login'); setMobileMenuOpen(false) }}
-                  className={`${styles.mobileBtnLogin} w-full bg-white rounded-xl hover:bg-blue-50 transition-colors focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900`}
-                >
-                  Iniciar Sesión
                 </button>
               </>
             )}
