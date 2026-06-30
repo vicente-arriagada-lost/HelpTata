@@ -19,7 +19,7 @@
 //   onNavigate → función para cambiar de página
 // =============================================================
 import { useState, useEffect } from 'react'
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import {
   getCuestionariosPorTutorial,
   getPreguntasPorCuestionario,
@@ -27,6 +27,7 @@ import {
   responderCuestionario,
 } from '../../src/services/cuestionarioService'
 import { getProgresoPorUsuarioYTutorial, crearProgreso, actualizarProgreso } from '../../src/services/progresoService'
+import { porcentajeANota } from '../../src/utils/nota'
 import styles from './Quiz.module.scss'
 
 export function Quiz({ course, user, onComplete, onNavigate }) {
@@ -120,18 +121,29 @@ export function Quiz({ course, user, onComplete, onNavigate }) {
     setAnswers(newAnswers)
 
     if (currentQuestion < preguntas.length - 1) {
-      // Avanzar a la siguiente pregunta
       setCurrentQuestion(currentQuestion + 1)
       setSelectedAnswer(null)
       setNoAnswerError(false)
+      // Scroll al inicio en móvil para que el usuario vea la pregunta
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50)
     } else {
-      // Último pregunta: calcular score y guardar en el backend
-      const score = Math.round((newAnswers.filter(a => a.correcto).length / preguntas.length) * 100)
+      const correctas = newAnswers.filter(a => a.correcto).length
+      const falladas = newAnswers.length - correctas
+      const score = Math.round((correctas / preguntas.length) * 100)
+      const nota = porcentajeANota(score)
+
+      // Guardar resultado en localStorage para "Ver Respuestas"
+      localStorage.setItem(`helptata_quiz_${course.id}`, JSON.stringify({
+        preguntas,
+        answers: newAnswers,
+        nota,
+        correctas,
+        incorrectas: falladas,
+      }))
 
       if (idCuestionario && user) {
         setEnviando(true)
         try {
-          // Guardar respuestas del cuestionario
           await responderCuestionario(idCuestionario, {
             id_usuario: user.id,
             respuestas: newAnswers.map(a => ({
@@ -143,40 +155,35 @@ export function Quiz({ course, user, onComplete, onNavigate }) {
           console.error('Error al guardar respuestas:', err)
         }
 
-        // Guardar/actualizar progreso en msProgreso.
-        // El porcentaje se calcula en el backend como (acertadas / total) * 100
-        const acertadas = newAnswers.filter(a => a.correcto).length
-        const falladas = newAnswers.length - acertadas
         const totalPreg = preguntas.length
         try {
           const resProgreso = await getProgresoPorUsuarioYTutorial(user.id, course.id)
           await actualizarProgreso(resProgreso.data.id_progreso, {
-            recursos_completados: acertadas,
+            recursos_completados: correctas,
             cantidad_recursos_totales: totalPreg,
-            preguntas_acertadas: acertadas,
+            preguntas_acertadas: correctas,
             preguntas_falladas: falladas,
           })
         } catch {
-          // No existe aún → crear registro nuevo
           try {
             await crearProgreso({
               id_usuario: user.id,
               id_tutorial: course.id,
-              recursos_completados: acertadas,
+              recursos_completados: correctas,
               cantidad_recursos_totales: totalPreg,
-              preguntas_acertadas: acertadas,
+              preguntas_acertadas: correctas,
               preguntas_falladas: falladas,
             })
           } catch (err) {
             console.error('Error al guardar progreso:', err)
           }
         }
-
         setEnviando(false)
       }
 
       onComplete(course.id, score)
       setShowResult(true)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
@@ -205,60 +212,53 @@ export function Quiz({ course, user, onComplete, onNavigate }) {
     )
   }
 
-  // ── Pantalla de resultados ──
+  // ── Pantalla de felicitaciones ──
   if (showResult) {
-    const score = Math.round((answers.filter(a => a.correcto).length / preguntas.length) * 100)
-    const passed = score >= 70
+    const correctas = answers.filter(a => a.correcto).length
+    const score = Math.round((correctas / preguntas.length) * 100)
+    const nota = porcentajeANota(score)
+    const aprobado = nota >= 4.0
 
     return (
       <div className={`${styles.pageWrapper} min-h-screen py-10 sm:py-14 px-4 sm:px-6`}>
         <main id="main-content" className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-14 text-center">
-            <h1 className={`${styles.resultHeading} font-bold mb-8`}>
-              ¡Cuestionario Completado!
+            <div className="text-8xl mb-6" aria-hidden="true">{aprobado ? '🎉' : '💪'}</div>
+            <h1 className={`${styles.resultHeading} font-bold mb-4`}>
+              {aprobado ? '¡Felicitaciones!' : '¡Buen intento!'}
             </h1>
-
-            {/* Puntuación grande con color según si aprobó — dinámico, se mantiene inline */}
-            <div
-              role="status"
-              aria-label={`Tu puntuación es ${score} por ciento`}
-              className="font-bold mb-8"
-              style={{ fontSize: 'clamp(4rem, 10vw, 6rem)', color: passed ? '#1a7a45' : '#d97706' }}
-            >
-              {score}%
-            </div>
-
-            <p className={`${styles.resultText} mb-10 leading-relaxed`}>
-              {passed
-                ? '¡Excelente trabajo! Has completado el curso exitosamente.'
-                : 'Buen intento. Te recomendamos revisar el material del curso.'}
+            <p className={`${styles.resultText} mb-8 leading-relaxed`}>
+              {aprobado
+                ? 'Completaste el cuestionario exitosamente. ¡Sigue aprendiendo!'
+                : 'No te rindas, puedes volver a intentarlo cuando quieras.'}
             </p>
 
-            {/* Resumen de respuestas correctas e incorrectas — colores dinámicos se mantienen inline */}
-            <ul className="space-y-4 text-left mb-10" aria-label="Resumen de respuestas">
-              {answers.map((a, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-4 p-4 sm:p-5 rounded-xl"
-                  style={{ backgroundColor: a.correcto ? '#f0fdf4' : '#fef2f2', border: `2px solid ${a.correcto ? '#86efac' : '#fca5a5'}` }}
-                >
-                  {a.correcto
-                    ? <CheckCircle size={30} aria-hidden="true" style={{ color: '#16a34a', flexShrink: 0 }} />
-                    : <XCircle size={30} aria-hidden="true" style={{ color: '#dc2626', flexShrink: 0 }} />
-                  }
-                  <span className={styles.answerLabel}>
-                    Pregunta {index + 1}: {a.correcto ? 'Correcta' : 'Incorrecta'}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <div className="rounded-2xl p-8 mb-10 inline-block" style={{ backgroundColor: aprobado ? '#f0fdf4' : '#fef2f2', border: `2px solid ${aprobado ? '#86efac' : '#fca5a5'}` }}>
+              <p style={{ fontSize: '1.2rem', color: '#4a5568', marginBottom: '0.5rem' }}>Tu nota</p>
+              <p className="font-bold" style={{ fontSize: 'clamp(3.5rem, 10vw, 5rem)', color: aprobado ? '#16a34a' : '#d97706', lineHeight: 1 }}>
+                {nota}
+              </p>
+              <p style={{ fontSize: '1.1rem', color: '#6b7280', marginTop: '0.3rem' }}>de 7.0</p>
+              <p style={{ fontSize: '1.1rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                {correctas} de {preguntas.length} respuestas correctas
+              </p>
+            </div>
 
-            <button
-              onClick={() => onNavigate('course')}
-              className={`${styles.returnBtn} w-full rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-4 focus:ring-offset-2`}
-            >
-              Volver al Curso
-            </button>
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => onNavigate('course')}
+                className={`${styles.returnBtn} w-full rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-4 focus:ring-offset-2`}
+              >
+                Volver al Curso
+              </button>
+              <button
+                onClick={() => onNavigate('respuestas')}
+                className="w-full rounded-xl py-4 font-bold border-2 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-4"
+                style={{ borderColor: '#1e3a5f', color: '#1e3a5f', fontSize: '1.3rem' }}
+              >
+                Ver Respuestas Detalladas
+              </button>
+            </div>
           </div>
         </main>
       </div>

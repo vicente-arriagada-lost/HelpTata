@@ -43,6 +43,7 @@ import AdminPanel from './src/pages/admin/AdminPanel'
 import AdminUsuarios from './src/pages/admin/AdminUsuarios'
 import AdminTutoriales from './src/pages/admin/AdminTutoriales'
 import AuthCallback from './src/pages/AuthCallback'
+import { ResultadoReview } from './components/ResultadoReview/ResultadoReview'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -64,6 +65,7 @@ const PAGE_PATHS = {
   course: '/curso',
   tutorial: '/tutorial',
   quiz: '/quiz',
+  respuestas: '/respuestas',
   admin: '/admin',
   'admin-usuarios': '/admin/usuarios',
   'admin-tutoriales': '/admin/tutoriales',
@@ -95,23 +97,26 @@ function MainPageWrapper() {
 function LoginWrapper() {
   const onNavigate = useNavigateAdapter()
   const navigate = useNavigate()
-  return (
-    <Login
-      onLogin={() => navigate('/')}
-      onNavigate={onNavigate}
-    />
-  )
+
+  function handleLogin() {
+    const pendingRaw = sessionStorage.getItem('helptata_pending_course')
+    if (pendingRaw) {
+      sessionStorage.removeItem('helptata_pending_course')
+      const course = JSON.parse(pendingRaw)
+      navigate('/curso', { state: { course } })
+    } else {
+      navigate('/')
+    }
+  }
+
+  return <Login onLogin={handleLogin} onNavigate={onNavigate} />
 }
 
 function RegisterWrapper() {
   const onNavigate = useNavigateAdapter()
   const navigate = useNavigate()
-  return (
-    <Register
-      onRegister={() => navigate('/login')}
-      onNavigate={onNavigate}
-    />
-  )
+  // El curso pendiente se mantiene en sessionStorage hasta que el usuario inicia sesión
+  return <Register onRegister={() => navigate('/login')} onNavigate={onNavigate} />
 }
 
 function UserProfileWrapper() {
@@ -153,6 +158,7 @@ function CoursePageWrapper() {
       onNavigate={(page) => {
         if (page === 'quiz') navigate('/quiz', { state: { course } })
         else if (page === 'tutorial') navigate('/tutorial', { state: { course } })
+        else if (page === 'respuestas') navigate('/respuestas', { state: { course } })
         else onNavigate(page)
       }}
     />
@@ -188,10 +194,22 @@ function QuizWrapper() {
     <Quiz
       course={course}
       user={usuario}
-      onComplete={() => navigate('/curso', { state: { course } })}
-      onNavigate={onNavigate}
+      onComplete={() => {}}
+      onNavigate={(page) => {
+        if (page === 'respuestas') navigate('/respuestas', { state: { course } })
+        else if (page === 'course') navigate('/curso', { state: { course } })
+        else onNavigate(page)
+      }}
     />
   )
+}
+
+function ResultadoReviewWrapper() {
+  const { state } = useLocation()
+  const navigate = useNavigate()
+  const course = state?.course
+  if (!course) return <Navigate to="/" replace />
+  return <ResultadoReview course={course} onVolver={() => navigate('/curso', { state: { course } })} />
 }
 
 // ── Árbol de rutas ────────────────────────────────────────────────────────────
@@ -204,12 +222,8 @@ function AppRoutes() {
 
       <ScrollToTop />
       <Routes>
-        {/* Ruta principal — requiere autenticación */}
-        <Route path="/" element={
-          <PrivateRoute>
-            <MainPageWrapper />
-          </PrivateRoute>
-        } />
+        {/* Ruta principal — accesible sin autenticación */}
+        <Route path="/" element={<MainPageWrapper />} />
         <Route path="/login" element={<LoginWrapper />} />
         <Route path="/registro" element={<RegisterWrapper />} />
         <Route path="/tutorial" element={<TutorialQuizWrapper />} />
@@ -229,6 +243,11 @@ function AppRoutes() {
         <Route path="/quiz" element={
           <PrivateRoute>
             <QuizWrapper />
+          </PrivateRoute>
+        } />
+        <Route path="/respuestas" element={
+          <PrivateRoute>
+            <ResultadoReviewWrapper />
           </PrivateRoute>
         } />
 

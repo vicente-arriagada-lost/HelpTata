@@ -18,6 +18,7 @@ import { Play, Volume2, SkipBack, SkipForward, Maximize } from 'lucide-react'
 import { Header } from '../Header/Header'
 import { ProgressCircle } from '../ProgressCircle/ProgressCircle'
 import { TataBot } from '../TataBot/TataBot'
+import { porcentajeANota } from '../../src/utils/nota'
 import styles from './CoursePage.module.scss'
 
 const PLYR_OPTIONS = {
@@ -32,6 +33,8 @@ const PLYR_OPTIONS = {
 }
 
 export function CoursePage({ course, user, progress, onNavigate }) {
+  const nota = porcentajeANota(progress)
+  const tieneRespuestas = !!localStorage.getItem(`helptata_quiz_${course?.id}`)
   const videoRef = useRef(null)
   const plyrRef = useRef(null)
   const [mostrarOverlay, setMostrarOverlay] = useState(true)
@@ -155,13 +158,22 @@ export function CoursePage({ course, user, progress, onNavigate }) {
                 Tu Progreso
               </h3>
               <div className="flex justify-center mb-5">
-                <ProgressCircle percentage={progress} />
+                <ProgressCircle percentage={progress} nota={progress > 0 ? nota : null} />
               </div>
               <p className={`${styles.progressText} text-center`}>
-                Has completado el{' '}
-                <span className={styles.progressPct}>{progress}%</span>{' '}
-                del curso
+                {progress > 0
+                  ? <>Tu nota es <span className={styles.progressPct}>{nota}</span> de 7.0</>
+                  : 'Aún no has completado el cuestionario'}
               </p>
+              {tieneRespuestas && (
+                <button
+                  onClick={() => onNavigate('respuestas')}
+                  className="mt-5 w-full rounded-xl py-3 font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-4"
+                  style={{ backgroundColor: '#1e3a5f', color: '#fff', fontSize: '1.15rem' }}
+                >
+                  Ver Respuestas
+                </button>
+              )}
             </div>
 
             {/* TataBot */}

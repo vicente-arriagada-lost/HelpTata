@@ -22,6 +22,7 @@ import { User, Award, LogOut, Pencil, Check, X, KeyRound, Mail, CheckCircle2, Ci
 import { toast } from 'react-toastify'
 import { getProgresoUsuario } from '../../src/services/progresoService'
 import { getTutoriales } from '../../src/services/tutorialService'
+import { porcentajeANota } from '../../src/utils/nota'
 import { getUsuarioPorId, actualizarUsuario, actualizarEmail } from '../../src/services/usuarioService'
 import { passwordRules, validarTelefono } from '../../src/validators/fieldValidators'
 import styles from './UserProfile.module.scss'
@@ -87,12 +88,16 @@ export function UserProfile({ user, onNavigate, onLogout }) {
         const nombresPorId = {}
         resTutoriales.data.forEach(t => { nombresPorId[t.id_tutor] = t.nombre_tuto })
         setTotalTutoriales(resTutoriales.data.length)
-        setProgreso(resProgreso.data.map(p => ({
-          idProgreso: p.id_progreso,
-          idTutor: p.id_tutorial,
-          nombreCurso: nombresPorId[p.id_tutorial] || `Curso ${p.id_tutorial}`,
-          porcentaje: p.porcentaje_progreso ?? 0,
-        })))
+        setProgreso(resProgreso.data.map(p => {
+          const pct = p.porcentaje_progreso ?? 0
+          return {
+            idProgreso: p.id_progreso,
+            idTutor: p.id_tutorial,
+            nombreCurso: nombresPorId[p.id_tutorial] || `Curso ${p.id_tutorial}`,
+            porcentaje: pct,
+            nota: porcentajeANota(pct),
+          }
+        }))
       } catch {
         if (!cancelado) setErrorProgreso('No se pudo cargar el progreso. Intenta más tarde.')
       } finally {
@@ -104,8 +109,8 @@ export function UserProfile({ user, onNavigate, onLogout }) {
     return () => { cancelado = true }
   }, [user?.id])
 
-  // Estadísticas derivadas del progreso
-  const cursosCompletados = progreso.filter(p => p.porcentaje >= 70).length
+  // Estadísticas derivadas del progreso (aprobado = nota >= 4.0)
+  const cursosCompletados = progreso.filter(p => p.nota >= 4.0).length
   const totalCursos = totalTutoriales
   const progresoTotal = totalCursos > 0
     ? Math.round((cursosCompletados / totalCursos) * 100)
@@ -230,9 +235,12 @@ export function UserProfile({ user, onNavigate, onLogout }) {
                   </p>
                 </div>
                 <div className={`${styles.statCard} rounded-xl p-5 sm:p-6`}>
-                  <p className={`${styles.statLabel} mb-2`}>Progreso Total</p>
-                  <p className={`${styles.statValueGreen} font-bold`} aria-label={`Progreso total: ${progresoTotal} por ciento`}>
-                    {progresoTotal}%
+                  <p className={`${styles.statLabel} mb-2`}>Nota Promedio</p>
+                  <p className={`${styles.statValueGreen} font-bold`} aria-label={`Nota promedio: ${progreso.length > 0 ? (progreso.reduce((s, p) => s + p.nota, 0) / progreso.length).toFixed(1) : '—'}`}>
+                    {progreso.length > 0
+                      ? (progreso.reduce((s, p) => s + p.nota, 0) / progreso.length).toFixed(1)
+                      : '—'}
+                    <span style={{ fontSize: '1rem', fontWeight: 400 }}> / 7.0</span>
                   </p>
                 </div>
               </div>
@@ -250,18 +258,20 @@ export function UserProfile({ user, onNavigate, onLogout }) {
               </h2>
               <ul className="space-y-4" aria-label="Lista de cursos y su progreso">
                 {progreso.map(p => {
-                  const passed = p.porcentaje >= 70
+                  const passed = p.nota >= 4.0
                   return (
                     <li key={p.idProgreso} className={`${styles.courseItem} bg-white rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4`}>
                       <div className="flex-1">
                         <h3 className={`${styles.courseName} mb-3`}>{p.nombreCurso}</h3>
-                        <div role="progressbar" aria-valuenow={p.porcentaje} aria-valuemin={0} aria-valuemax={100} aria-label={`Progreso de ${p.nombreCurso}: ${p.porcentaje}%`} className={`${styles.progressBarTrack} w-full rounded-full`}>
-                          {/* Dynamic color based on passed — kept inline */}
+                        <div role="progressbar" aria-valuenow={p.porcentaje} aria-valuemin={0} aria-valuemax={100} aria-label={`Nota de ${p.nombreCurso}: ${p.nota}`} className={`${styles.progressBarTrack} w-full rounded-full`}>
                           <div className="rounded-full transition-all duration-500" style={{ width: `${p.porcentaje}%`, height: '12px', backgroundColor: passed ? '#16a34a' : '#1e3a5f' }} />
                         </div>
                       </div>
                       <div className="flex items-center gap-3 sm:ml-6">
-                        <span className={`${styles.coursePct} font-bold`} aria-hidden="true">{p.porcentaje}%</span>
+                        <div className="text-center">
+                          <span className={`${styles.coursePct} font-bold`} aria-hidden="true">{p.nota}</span>
+                          <span style={{ fontSize: '0.9rem', color: '#6b7280', display: 'block' }}>/ 7.0</span>
+                        </div>
                         {passed && <Award size={30} aria-label="Curso aprobado" style={{ color: '#16a34a' }} />}
                       </div>
                     </li>

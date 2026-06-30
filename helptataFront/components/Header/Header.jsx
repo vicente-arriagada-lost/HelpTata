@@ -17,7 +17,7 @@ import { User, Menu, X, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import styles from './Header.module.scss'
 
-export function Header({ user, onNavigate, showCourseButton = false, showBackButton = false }) {
+export function Header({ user, onNavigate, showBackButton = false }) {
   // Controla si el menú móvil (hamburguesa) está abierto o cerrado
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -56,19 +56,6 @@ export function Header({ user, onNavigate, showCourseButton = false, showBackBut
 
           {/* Navegación de escritorio */}
           <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-4">
-            {/* Botón para ir a la sección de cursos con scroll suave */}
-            {showCourseButton && (
-              <button
-                onClick={() => {
-                  const cursosSection = document.getElementById('cursos')
-                  if (cursosSection) cursosSection.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className={`${styles.btnCourses} bg-white rounded-xl hover:bg-blue-50 transition-colors focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900`}
-              >
-                Cursos
-              </button>
-            )}
-
             {/* Si hay usuario logueado: botón de perfil (+ Admin si corresponde). Si no: login + registro */}
             {user ? (
               <>
@@ -126,19 +113,6 @@ export function Header({ user, onNavigate, showCourseButton = false, showBackBut
         {/* Menú móvil desplegable */}
         {mobileMenuOpen && (
           <nav id="mobile-menu" aria-label="Menú móvil" className="md:hidden mt-5 space-y-4 pb-4">
-            {showCourseButton && (
-              <button
-                onClick={() => {
-                  const cursosSection = document.getElementById('cursos')
-                  if (cursosSection) cursosSection.scrollIntoView({ behavior: 'smooth' })
-                  setMobileMenuOpen(false)
-                }}
-                className={`${styles.mobileBtnCourses} w-full bg-white rounded-xl hover:bg-blue-50 transition-colors focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900`}
-              >
-                Cursos
-              </button>
-            )}
-
             {user ? (
               <>
                 {user.rol === 'ADMIN' && (

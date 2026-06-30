@@ -67,6 +67,17 @@ function ImagenConFallback({ src, alt, style, className, ...rest }) {
 }
 
 export function MainPage({ user, onNavigate, onSelectCourse }) {
+  const [popupCurso, setPopupCurso] = useState(null)
+
+  // Si el usuario no está logueado, guardar el curso en sessionStorage y mostrar popup
+  function handleCursoClick(course) {
+    if (user) {
+      onSelectCourse(course)
+    } else {
+      sessionStorage.setItem('helptata_pending_course', JSON.stringify(course))
+      setPopupCurso(course)
+    }
+  }
   const [videoIntroUrl, setVideoIntroUrl] = useState(null)
   const videoIntroRef = useRef(null)
   const plyrIntroRef = useRef(null)
@@ -144,7 +155,55 @@ export function MainPage({ user, onNavigate, onSelectCourse }) {
 
   return (
     <div className={`${styles.pageWrapper} min-h-screen`}>
-      <Header user={user} onNavigate={onNavigate} showCourseButton={true} />
+      {/* Popup para usuarios no logueados que hacen click en un curso */}
+      {popupCurso && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="popup-titulo"
+          onClick={() => setPopupCurso(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 max-w-md w-full text-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="text-5xl mb-4" aria-hidden="true">🔒</div>
+            <h2 id="popup-titulo" className="font-bold mb-3" style={{ fontSize: '1.8rem', color: '#1e3a5f' }}>
+              ¡Bienvenido a HelpTata!
+            </h2>
+            <p className="mb-8 leading-relaxed" style={{ fontSize: '1.25rem', color: '#4a5568' }}>
+              Para acceder al curso <strong>"{popupCurso.title}"</strong> necesitas iniciar sesión o crear una cuenta. ¡Es gratis y muy fácil!
+            </p>
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => { setPopupCurso(null); onNavigate('login') }}
+                className="w-full rounded-xl py-4 font-bold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-4"
+                style={{ backgroundColor: '#1e3a5f', fontSize: '1.3rem' }}
+              >
+                Iniciar Sesión
+              </button>
+              <button
+                onClick={() => { setPopupCurso(null); onNavigate('register') }}
+                className="w-full rounded-xl py-4 font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-4"
+                style={{ backgroundColor: '#22c55e', color: '#fff', fontSize: '1.3rem' }}
+              >
+                Crear Cuenta Gratis
+              </button>
+              <button
+                onClick={() => setPopupCurso(null)}
+                className="text-gray-500 hover:text-gray-700 transition-colors underline mt-1"
+                style={{ fontSize: '1.1rem' }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Header user={user} onNavigate={onNavigate} />
 
       <main id="main-content">
 
@@ -168,13 +227,21 @@ export function MainPage({ user, onNavigate, onSelectCourse }) {
             </p>
             <button
               onClick={() => {
-                // Desplazar suavemente hacia la sección de cursos
                 document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' })
               }}
               className={`${styles.heroBtn} rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2`}
             >
               ▶ Ver Cursos Disponibles
             </button>
+            {!user && (
+              <button
+                onClick={() => onNavigate('register')}
+                className="mt-4 rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2"
+                style={{ backgroundColor: '#22c55e', color: '#fff', fontWeight: 700, fontSize: 'clamp(1.1rem, 3vw, 1.4rem)', padding: '0.85rem 2.5rem', display: 'block', width: 'fit-content', margin: '1rem auto 0' }}
+              >
+                Crear Cuenta Gratis
+              </button>
+            )}
           </div>
         </section>
 
@@ -252,7 +319,7 @@ export function MainPage({ user, onNavigate, onSelectCourse }) {
                     <CourseCard
                       key={course.id}
                       course={course}
-                      onSelect={onSelectCourse}
+                      onSelect={handleCursoClick}
                     />
                   ))}
                 </div>
@@ -261,23 +328,25 @@ export function MainPage({ user, onNavigate, onSelectCourse }) {
           </div>
         </section>
 
-        {/* ── TATABOT ── */}
-        <section
-          aria-labelledby="tatabot-heading"
-          className={`${styles.tataBotSection} py-14 sm:py-18`}
-        >
-          <div className="max-w-5xl mx-auto px-6 sm:px-8">
-            <h2
-              id="tatabot-heading"
-              className={`${styles.sectionHeading} font-bold text-center mb-8`}
-            >
-              Pregúntale a TataBot
-            </h2>
-            <div className={`${styles.tataBotCard} bg-white rounded-2xl p-6 sm:p-10`}>
-              <TataBot />
+        {/* ── TATABOT (solo para usuarios logueados) ── */}
+        {user && (
+          <section
+            aria-labelledby="tatabot-heading"
+            className={`${styles.tataBotSection} py-14 sm:py-18`}
+          >
+            <div className="max-w-5xl mx-auto px-6 sm:px-8">
+              <h2
+                id="tatabot-heading"
+                className={`${styles.sectionHeading} font-bold text-center mb-8`}
+              >
+                Pregúntale a TataBot
+              </h2>
+              <div className={`${styles.tataBotCard} bg-white rounded-2xl p-6 sm:p-10`}>
+                <TataBot />
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
       </main>
 

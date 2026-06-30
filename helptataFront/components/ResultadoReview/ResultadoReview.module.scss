@@ -1,0 +1,58 @@
+@use '../../src/styles/variables' as *;
+
+.pageWrapper {
+  background-color: $color-bg;
+  padding-bottom: 3rem;
+}
+
+.volverBtn {
+  background-color: white;
+  color: $color-navy;
+  border: 2px solid $color-navy;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover { background-color: #eff6ff; }
+}
+
+.heading {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: $color-navy;
+}
+
+.subheading {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin-top: 0.25rem;
+}
+
+.statBox {
+  border: 2px solid;
+  min-width: 120px;
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.statSub {
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+.questionText {
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  color: $color-navy;
+}
+
+.emptyText {
+  font-size: 1.3rem;
+  color: #6b7280;
+}
