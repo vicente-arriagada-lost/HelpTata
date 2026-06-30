@@ -1,16 +1,16 @@
 @use '../../src/styles/variables' as *;
 
 .pageWrapper {
-  background-color: $color-bg;
+  background-color: $navy-bg;
   padding-bottom: 3rem;
 }
 
 .volverBtn {
-  background-color: white;
-  color: $color-navy;
-  border: 2px solid $color-navy;
+  background-color: $white;
+  color: $navy;
+  border: 2px solid $navy;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: $fs-base;
   padding: 0.75rem 1.5rem;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -20,12 +20,12 @@
 
 .heading {
   font-size: clamp(1.6rem, 4vw, 2.2rem);
-  color: $color-navy;
+  color: $navy;
 }
 
 .subheading {
-  font-size: 1.2rem;
-  color: #4a5568;
+  font-size: $fs-sm;
+  color: $gray-text;
   margin-top: 0.25rem;
 }
 
@@ -37,22 +37,22 @@
 
 .statLabel {
   font-size: 1rem;
-  color: #6b7280;
+  color: $gray-muted;
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
 
 .statSub {
   font-size: 0.95rem;
-  color: #9ca3af;
+  color: $gray-muted-2;
 }
 
 .questionText {
   font-size: clamp(1.3rem, 3vw, 1.6rem);
-  color: $color-navy;
+  color: $navy;
 }
 
 .emptyText {
-  font-size: 1.3rem;
-  color: #6b7280;
+  font-size: $fs-base;
+  color: $gray-muted;
 }
