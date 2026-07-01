@@ -150,7 +150,102 @@ registry.addMapping("/**")
 
 ---
 
-## 8. Cómo funciona el servidor en producción
+## 8. Cómo llega internet hasta el servidor
+
+### El problema: IP dinámica
+
+El servidor de HelpTata no está en un datacenter con IP fija — está en una red local con una **IP pública dinámica** (cambia cada cierto tiempo). Eso crea dos problemas:
+1. ¿Cómo saber siempre cuál es la IP actual?
+2. ¿Cómo evitar abrir puertos en el router (que muchas veces no se puede)?
+
+Ambos se resuelven con DDNS + Cloudflare Tunnel.
+
+---
+
+### DDNS — mantener la IP actualizada
+
+Un **script que corre en el servidor** consulta periódicamente cuál es su IP pública actual y la reporta al proveedor DDNS. Así, aunque la IP cambie, el nombre de dominio siempre sabe a dónde apuntar.
+
+```
+Servidor (IP cambia)
+      │
+      │  script DDNS: "mi IP ahora es 200.90.169.141"
+      ▼
+Proveedor DDNS
+      │
+      │  actualiza el registro
+      ▼
+200.90.169.141  ← siempre apunta a la IP actual del servidor
+```
+
+---
+
+### Cloudflare Tunnel — exponer los servicios sin abrir puertos
+
+En lugar de abrir puertos en el router (que requiere acceso al router y expone el servidor directamente a internet), se usa **Cloudflare Tunnel**.
+
+El servidor establece una conexión **saliente** hacia Cloudflare. Cloudflare recibe las peticiones de los usuarios y las reenvía por ese túnel hasta el servidor. El router no necesita configuración.
+
+```
+Usuario en internet
+      │
+      │  https://helptata.cl
+      ▼
+Cloudflare (maneja HTTPS, certificados, protección)
+      │
+      │  túnel cifrado (conexión saliente del servidor)
+      ▼
+cloudflared (servicio en el servidor)
+      │
+      ▼
+Docker containers (localhost)
+```
+
+### Qué subdominio apunta a qué puerto
+
+El archivo `~/.cloudflared/config.yml` del servidor define el mapeo completo:
+
+| Subdominio | Puerto local | Servicio |
+|---|---|---|
+| `helptata.cl` | `:5000` | Frontend (Nginx + React) |
+| `www.helptata.cl` | `:5000` | Frontend |
+| `ms-usuario.helptata.cl` | `:8080` | ms-Usuario |
+| `ms-logs.helptata.cl` | `:8081` | ms-Logs |
+| `ms-tutoriales.helptata.cl` | `:8082` | ms-Tutoriales |
+| `ms-progreso.helptata.cl` | `:8083` | ms-Progreso |
+| `ms-direccion.helptata.cl` | `:8084` | ms-Dirección |
+| `ms-evaluaciones.helptata.cl` | `:8085` | ms-Evaluaciones |
+| `ms-preguntas.helptata.cl` | `:8086` | ms-Preguntas |
+| `ms-tatabot.helptata.cl` | `:8087` | ms-TataBot |
+| `videos.helptata.cl` | `:9000` | Servidor de videos |
+| `imagenes.helptata.cl` | `:9001` | Servidor de imágenes |
+
+### cloudflared como servicio del sistema
+
+`cloudflared` corre como servicio de systemd — arranca automáticamente cuando el servidor enciende y se reinicia solo si falla:
+
+```bash
+sudo systemctl enable cloudflared   # arranca al encender
+sudo systemctl start cloudflared    # iniciar ahora
+sudo systemctl status cloudflared   # verificar que está corriendo
+```
+
+### Flujo completo de una petición real
+
+```
+1. Usuario abre helptata.cl en el navegador
+2. DNS de Cloudflare resuelve helptata.cl → red de Cloudflare
+3. Cloudflare recibe la petición HTTPS (certifica el dominio)
+4. Lo reenvía por el túnel cifrado al servidor
+5. cloudflared en el servidor lo pasa a localhost:5000
+6. Nginx del frontend lo sirve (archivos React o proxy a un MS)
+7. Si es /api/usuarios → Nginx hace proxy a ms-usuario:8080
+8. ms-usuario responde → sube por el mismo camino hasta el usuario
+```
+
+---
+
+## 9. Cómo funciona el servidor en producción
 
 ### Todo corre en Docker
 
