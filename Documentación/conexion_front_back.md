@@ -242,6 +242,86 @@ Esto hace que las imágenes sean pequeñas y el deploy rápido.
 
 ---
 
+## 9. Cómo se almacenan y reproducen los videos
+
+### Dónde viven los archivos
+
+Los videos **no están en el repositorio** — son archivos `.mp4` guardados en una carpeta del servidor. La ruta de esa carpeta se define en el `.env`:
+
+```env
+VIDEOS_PATH=/ruta/en/el/servidor/donde/estan/los/videos
+```
+
+Docker monta esa carpeta como volumen de solo lectura dentro del contenedor `videos-server`.
+
+### Quién sirve los videos
+
+Un contenedor Nginx dedicado (`videos-server`) los sirve en el puerto `9000`:
+
+```
+Archivo en disco del servidor
+  /ruta/videos/Internet Seguro.mp4
+        │
+        │ (montado como volumen)
+        ▼
+  Contenedor videos-server (Nginx :9000)
+        │
+        │ GET http://helptata.cl:9000/Internet%20Seguro.mp4
+        ▼
+  Plyr (reproductor de video en el browser)
+```
+
+La configuración clave de este Nginx (`docker/nginx/media.conf`) hace dos cosas esenciales:
+
+1. **CORS abierto** — permite que el browser cargue el video aunque venga de un puerto distinto (`:9000` vs `:443`):
+```nginx
+add_header Access-Control-Allow-Origin  *  always;
+add_header Access-Control-Allow-Headers 'Range, Content-Type' always;
+add_header Access-Control-Expose-Headers 'Content-Range, Accept-Ranges, Content-Length' always;
+```
+
+2. **Range requests** — Nginx los soporta nativamente. Esto es lo que permite que el usuario pueda mover la barra de progreso del video (buscar en el tiempo) sin tener que descargar todo el archivo primero.
+
+### Dónde se guarda la URL del video en la base de datos
+
+Las URLs no están hardcodeadas en el código — se guardan en la BD y el frontend las pide a la API:
+
+**Videos de los cursos** → tabla `tutorial` en `helptata_tutoriales`:
+```
+tutorial.tutorial = "http://IP_SERVIDOR:9000/Internet Seguro.mp4"
+```
+(el campo se llama `tutorial` aunque guarda la URL — es un nombre heredado del diseño original)
+
+**Video introductorio de la homepage** → tabla `configuracion` en `helptata_tutoriales`:
+```
+clave_config = "url_video_tutorial"
+valor_config = "http://IP_SERVIDOR:9000/VideoIntroductorio.mp4"
+```
+
+### Cómo llega la URL al reproductor
+
+```
+1. Frontend pide GET /api/tutoriales
+   └─► ms-tutoriales devuelve lista de cursos con campo { tutorial: "http://...9000/video.mp4" }
+
+2. MainPage llama GET /api/config/url_video_tutorial
+   └─► ms-tutoriales devuelve la URL del video introductorio
+
+3. El frontend pone la URL en el <video>:
+   <source src={course.videoUrl} type="video/mp4" />
+
+4. Plyr toma el <video> y añade sus controles encima
+   └─► el browser descarga el video en chunks via Range requests desde :9000
+```
+
+### Para agregar o cambiar un video
+
+1. Copiar el archivo `.mp4` a la carpeta del servidor definida en `VIDEOS_PATH`
+2. Actualizar la URL en la base de datos (tabla `tutorial` o `configuracion`)
+3. No hace falta reiniciar ningún contenedor — Nginx sirve los archivos directamente del disco
+
+---
+
 ## Resumen en una línea
 
 > El usuario hace login → el backend genera un JWT firmado → el frontend lo guarda en localStorage → lo envía en cada petición como `Authorization: Bearer` → el backend lo verifica con el mismo secreto → si es válido, responde con los datos.
