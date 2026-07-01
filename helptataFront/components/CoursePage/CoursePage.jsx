@@ -46,8 +46,35 @@ export function CoursePage({ course, user, progress, onNavigate }) {
 
   useEffect(() => {
     if (!videoRef.current) return
-    plyrRef.current = new Plyr(videoRef.current, PLYR_OPTIONS)
-    return () => { plyrRef.current?.destroy(); plyrRef.current = null }
+
+    const player = new Plyr(videoRef.current, {
+      ...PLYR_OPTIONS,
+      fullscreen: { enabled: true, fallback: true, iosNative: true },
+    })
+    plyrRef.current = player
+
+    // Immersive fullscreen on Android: hide system nav bar overlay
+    const container = player.elements?.container
+    if (container?.requestFullscreen) {
+      const orig = container.requestFullscreen.bind(container)
+      container.requestFullscreen = (opts) => orig({ navigationUI: 'hide', ...opts })
+    }
+
+    // Sync Plyr UI when fullscreen exits via system back/swipe (fixes exit button state)
+    const onFsChange = () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        container?.classList.remove('plyr--fullscreen-active')
+      }
+    }
+    document.addEventListener('fullscreenchange', onFsChange)
+    document.addEventListener('webkitfullscreenchange', onFsChange)
+
+    return () => {
+      player.destroy()
+      plyrRef.current = null
+      document.removeEventListener('fullscreenchange', onFsChange)
+      document.removeEventListener('webkitfullscreenchange', onFsChange)
+    }
   }, [])
 
   return (

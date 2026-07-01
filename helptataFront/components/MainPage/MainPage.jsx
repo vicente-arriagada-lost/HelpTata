@@ -104,8 +104,35 @@ export function MainPage({ user, onNavigate, onSelectCourse }) {
   // Inicializa Plyr al montar (el elemento video siempre está en el DOM)
   useEffect(() => {
     if (!videoIntroRef.current) return
-    plyrIntroRef.current = new Plyr(videoIntroRef.current, PLYR_OPTIONS)
-    return () => { plyrIntroRef.current?.destroy(); plyrIntroRef.current = null }
+
+    const player = new Plyr(videoIntroRef.current, {
+      ...PLYR_OPTIONS,
+      fullscreen: { enabled: true, fallback: true, iosNative: true },
+    })
+    plyrIntroRef.current = player
+
+    // Immersive fullscreen on Android: hide system nav bar overlay
+    const container = player.elements?.container
+    if (container?.requestFullscreen) {
+      const orig = container.requestFullscreen.bind(container)
+      container.requestFullscreen = (opts) => orig({ navigationUI: 'hide', ...opts })
+    }
+
+    // Sync Plyr UI when fullscreen exits via system back/swipe (fixes exit button state)
+    const onFsChange = () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        container?.classList.remove('plyr--fullscreen-active')
+      }
+    }
+    document.addEventListener('fullscreenchange', onFsChange)
+    document.addEventListener('webkitfullscreenchange', onFsChange)
+
+    return () => {
+      player.destroy()
+      plyrIntroRef.current = null
+      document.removeEventListener('fullscreenchange', onFsChange)
+      document.removeEventListener('webkitfullscreenchange', onFsChange)
+    }
   }, [])
 
   // Carga tutoriales y fotos al montar el componente
