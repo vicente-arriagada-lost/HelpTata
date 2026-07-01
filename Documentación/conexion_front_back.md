@@ -417,6 +417,107 @@ valor_config = "http://IP_SERVIDOR:9000/VideoIntroductorio.mp4"
 
 ---
 
+## 11. Cómo se conecta la app Android con la página web
+
+La app no replica la web — la **envuelve**. Tiene su propio registro/login nativo y luego carga `helptata.cl` dentro de un WebView.
+
+### Arquitectura general
+
+```
+App Android
+    │
+    ├─ Pantallas nativas (Kotlin + Jetpack Compose)
+    │   └─ Registro (7 pasos) y Login  ──► Retrofit ──► ms-usuario.helptata.cl
+    │                                           │
+    │                                    recibe JWT
+    │                                           │
+    └─ WebAppScreen (WebView)  ◄────────────────┘
+            │
+            │  carga: helptata.cl/auth-callback?token=eyJ...
+            ▼
+       helptata.cl (la misma web que el navegador)
+```
+
+### Paso a paso del login en la app
+
+```
+1. Usuario escribe email + contraseña en la pantalla nativa de login
+        │
+        ▼
+2. Retrofit llama POST https://ms-usuario.helptata.cl/api/usuarios/login
+        │
+        ▼
+3. ms-usuario valida, genera JWT y lo devuelve
+        │
+        ▼
+4. La app guarda el token en EncryptedSharedPreferences (cifrado en el dispositivo)
+   TokenStore.save(ctx, token)
+        │
+        ▼
+5. La app abre WebAppScreen y carga la URL:
+   https://helptata.cl/auth-callback?token=eyJhbGci...
+        │
+        ▼
+6. AuthCallback.jsx (en la web) lee el token del query param,
+   llama a login(token), lo guarda en localStorage y redirige a /
+        │
+        ▼
+7. La web funciona exactamente igual que en el navegador —
+   el WebView es un navegador integrado dentro de la app
+```
+
+### Cómo la app recuerda la sesión
+
+Al abrir la app, `TokenStore.load()` intenta leer el token guardado:
+
+```
+App abre
+    │
+    ├─ Hay token guardado ──► carga WebAppScreen directamente (sin pedir login)
+    │
+    └─ No hay token ──────► muestra pantalla de login
+```
+
+Si el token está corrupto o es incompatible (por ejemplo, al reinstalar la app con una firma diferente), `TokenStore` borra las credenciales automáticamente y pide login de nuevo.
+
+### Comunicación entre la web y la app nativa
+
+Dentro del WebView, la web puede llamar funciones nativas de Android usando un **JavaScript Bridge**:
+
+```
+JavaScript (helptata.cl)          Android nativo
+         │                              │
+         │  Android.logout()  ──────►  AndroidBridge.logout()
+         │                              │
+         │                         borra el token
+         │                         muestra pantalla de login
+```
+
+Esto permite que el botón "Cerrar sesión" de la web también cierre la sesión en la app nativa.
+
+### Pantalla completa del video en la app
+
+Cuando el usuario activa pantalla completa en el reproductor de video (Plyr), el WebView lo detecta y lo maneja de forma nativa:
+
+```
+Usuario toca botón fullscreen en Plyr
+        │
+        ▼
+WebChromeClient.onShowCustomView() se activa
+        │
+        ├─ Fuerza orientación landscape
+        ├─ Agrega la vista del video sobre toda la pantalla
+        └─ Activa modo inmersivo (oculta barra de sistema)
+               → el usuario desliza desde el borde para que aparezca
+
+Al salir de fullscreen (botón de Plyr o botón Atrás del teléfono):
+        │
+        ▼
+onHideCustomView() restaura la orientación y la barra del sistema
+```
+
+---
+
 ## Resumen en una línea
 
 > El usuario hace login → el backend genera un JWT firmado → el frontend lo guarda en localStorage → lo envía en cada petición como `Authorization: Bearer` → el backend lo verifica con el mismo secreto → si es válido, responde con los datos.
